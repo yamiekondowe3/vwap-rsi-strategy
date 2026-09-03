@@ -1,0 +1,51 @@
+{
+  "coverage": {
+    "symbol": "XAUUSD-M5",
+    "achieved_start": "2011-01-02 22:00:00+00:00",
+    "achieved_end": "2026-09-03 23:30:00+00:00",
+    "n_bars": 1094283,
+    "years_covered": 15.67,
+    "venue": "mt5:Deriv-Demo"
+  },
+  "report": {
+    "n_trades": 981,
+    "sharpe": -4.072863774795682,
+    "sortino": -54.35341414122834,
+    "max_drawdown_pct": -0.7251193155025315,
+    "max_drawdown_duration": "968",
+    "profit_factor": 0.6456333995591252,
+    "calmar": -0.3828621566980561,
+    "expectancy": -7.336091932244015,
+    "win_rate": 0.436289500509684,
+    "recovery_factor": -9982.723336584164,
+    "total_return_pct": -0.718036199706394
+  },
+  "monte_carlo_bootstrap": {
+    "method": "bootstrap",
+    "n_iterations": 5000,
+    "n_trades_per_sim": 981,
+    "var_95": -0.7824906477640083,
+    "var_99": -0.8039243071113009,
+    "median_final_equity": 0.28124189057135185,
+    "mean_final_equity": 0.28436188443239524,
+    "worst_max_drawdown": -0.8469077541438202,
+    "median_max_drawdown": -0.7222549725262283,
+    "p95_max_drawdown": -0.7854860893439479,
+    "ruin_probability": 0.9998,
+    "ruin_threshold": 0.5
+  },
+  "monte_carlo_shuffle": {
+    "method": "shuffle",
+    "n_iterations": 5000,
+    "n_trades_per_sim": 981,
+    "var_95": -0.7196706185531387,
+    "var_99": -0.719670618553139,
+    "median_final_equity": 0.280329381446862,
+    "mean_final_equity": 0.280329381446862,
+    "worst_max_drawdown": -0.7488678864891511,
+    "median_max_drawdown": -0.7229395787028441,
+    "p95_max_drawdown": -0.7307768057434791,
+    "ruin_probability": 1.0,
+    "ruin_threshold": 0.5
+  }
+}

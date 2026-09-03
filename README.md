@@ -20,6 +20,19 @@ realistic costs out-of-sample.** See `common/costs.py` for the friction
 model and `common/wfo.py` / `common/monte_carlo.py` for the validation
 harness this repo is built around.
 
+## Real-data result (headline finding)
+
+Full 15.7-year XAUUSD history was pulled from the connected MT5 demo
+account (Deriv-Demo). With default/un-optimized parameters, the strategy
+lost **-71.8%** with a Sharpe of **-4.07** and a Monte Carlo ruin
+probability of **~100%**. This **fails the go/no-go gate** — see
+`reports/data_coverage.md` and `reports/xauusd_vwap_rsi_real_data_results.json`
+for the full numbers, and `backtest/run_wfo_xauusd.py` /
+`reports/xauusd_vwap_rsi_wfo_method1_results.json` for the real (grid-search,
+not hand-tuned) walk-forward optimization check on whether any parameter
+region survives out-of-sample. This result is reported as-is per the
+project's honesty mandate, not smoothed over.
+
 ## Current state
 
 - `common/` — shared no-look-ahead VWAP/RSI/ATR/pivot math, friction model

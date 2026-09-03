@@ -1,36 +1,71 @@
 # Data coverage status
 
-**As of this build: no real market data has been ingested yet.** The
-proof-of-concept pipeline (`backtest/run_poc.py`) runs on synthetic
-random-walk OHLCV purely to validate that the backtest → metrics →
-Monte Carlo → WFO wiring works end to end without look-ahead bugs.
+## MT5 connectivity: resolved
 
-## MT5 connectivity
+The Python API was initially blocked by `(-6, 'Terminal: Authorization
+failed')`. Root cause (found via the MT5 terminal's own log, not the
+Options dialog): the AutoTrading toolbar toggle had been clicked several
+times in a row and landed on **disabled** as its final state. Once toggled
+back on, `MetaTrader5.initialize()` connects immediately (~100ms).
 
-The MT5 terminal (`C:\Program Files\MetaTrader 5 Terminal`) is installed
-and was confirmed connected to a demo account, but the Python API
-(`MetaTrader5.initialize()`) returned `(-6, 'Terminal: Authorization
-failed')` during this build and was not resolved in this session (the
-terminal was not restarted after enabling API/algo-trading access, which
-MT5 typically requires). **Next step:** fully close and relaunch the MT5
-terminal, confirm Tools → Options → Expert Advisors → "Allow algorithmic
-trading" is checked, log back into the demo account, then re-run
-`scripts_check_mt5.py` (in the `trading-systems/` root) to confirm symbol
-names and real available history depth per instrument before any real
-backtest is trusted.
+Connected account: `6289430` on `Deriv-Demo` (Deriv.com Limited), demo,
+hedging mode, $10,000 starting balance.
 
-## External backfill sources (not yet implemented)
+## Real achieved history (confirmed, not assumed)
 
-Per the project plan, once MT5 connectivity is restored the achieved MT5
-history should be backfilled with:
-- **XAUUSD / XAGUSD:** Dukascopy tick data aggregated to OHLCV.
-- **BTCUSD / ETHUSD:** a single fixed reputable exchange's API (e.g.
-  Coinbase or Kraken) — never an aggregated/CoinMarketCap-style volume
-  source (see the research docs' wash-trading warning).
-- **USOIL:** a public commodities data source.
+This broker's symbol names don't all match the canonical names in the
+project brief — resolved via `common.data_fetch.BROKER_SYMBOL_MAP`:
 
-None of this has been built yet — `common/data_fetch.py` currently only
-implements the MT5 leg (`fetch_mt5`) plus the generic Parquet cache/report
-helpers. Whatever real date range is achieved per symbol MUST be reported
-here (via `common.data_fetch.report_coverage`) instead of assuming 16
-years — do not backfill this section with aspirational numbers.
+| Canonical | Broker symbol | D1 history | M5 history (bars) |
+|---|---|---|---|
+| XAUUSD | `XAUUSD` | 2011-01-02 → 2026-09-03 (~15.7y) | 1,094,283 |
+| XAGUSD | `XAGUSD` | 2011-01-02 → 2026-09-03 (~15.7y) | 1,098,366 |
+| USOIL | `US Oil` (note the space) | 2024-01-22 → 2026-09-03 (**~2.6y only**) | 185,356 |
+| BTCUSD | `BTCUSD` | 2011-03-23 → 2026-09-03 (~15.4y) | 923,475 |
+| ETHUSD | `ETHUSD` | 2015-08-07 → 2026-09-03 (~11.1y) | 922,746 |
+
+**Takeaway:** this broker's history is much deeper than the "typical 1–5
+year" assumption in the original plan — 4 of 5 assets have 11–15.7 years of
+real M5 data, close to the requested 16 years. **USOIL is the exception**:
+only ~2.6 years is available under any symbol this broker offers (checked
+`OIL`, `WTI`, `BRENT`, `CRUDE`, `USO` substrings — `UK Brent Oil` is the
+only other oil-adjacent symbol, not fetched). Any USOIL walk-forward
+analysis will be materially less robust than the other four assets and
+should be flagged as such wherever it's reported, not silently backfilled
+to look comparable.
+
+All 5 assets' M5 OHLCV are cached as Parquet under `../data_cache/` (91MB
+total, single Deriv venue, tick volume — see the FX/crypto volume-quality
+caveats in the research docs before trusting this as true traded volume,
+particularly for BTCUSD/ETHUSD where this is one broker's derived
+tick-volume series, not a real spot-exchange volume feed).
+
+## Real-data VWAP+RSI result on XAUUSD (go/no-go check)
+
+Full achieved history (2011-01-02 to 2026-09-03, 1,094,283 M5 bars),
+**default/un-optimized parameters**, real friction model:
+
+- 981 trades, **Sharpe -4.07**, **total return -71.8%**, max drawdown
+  -72.5%, win rate 43.6%, profit factor 0.65.
+- Monte Carlo (5,000 iterations, both bootstrap and trade-order-shuffle):
+  ruin probability (equity < 50% of starting) ≈ **100%**.
+
+This fails the plan's go/no-go gate decisively with default parameters.
+Per the research docs' explicit warning against tuning a fragile edge into
+apparent profitability, this was **not** hand-tuned to look better — instead
+a real (small, deliberately non-exhaustive) grid-search walk-forward
+optimization was run: see `backtest/run_wfo_xauusd.py` and
+`reports/xauusd_vwap_rsi_wfo_method1_results.json` for the honest
+out-of-sample verdict across the 13 available 2y-IS/1y-OOS windows.
+
+Full result JSON: `reports/xauusd_vwap_rsi_real_data_results.json`.
+
+## Not done yet
+
+- External backfill adapters (Dukascopy/exchange APIs) — not needed for
+  XAUUSD/XAGUSD/BTCUSD/ETHUSD given the achieved MT5 depth above, but still
+  relevant for USOIL if 16y depth is required there specifically.
+- Method 2 WFO (7y IS / 1y OOS) — not yet run (Method 1 prioritized for
+  time budget); same `run_wfo`/`build_windows` functions apply directly.
+- Replication to XAGUSD / USOIL / BTCUSD / ETHUSD.
+- MQL5 EA Strategy Tester validation.

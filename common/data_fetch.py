@@ -19,6 +19,24 @@ DATA_ROOT = Path(__file__).resolve().parent.parent / "data_cache"
 
 SCHEMA_COLUMNS = ["open", "high", "low", "close", "volume"]
 
+# Canonical asset name -> actual broker symbol name, confirmed against the
+# connected Deriv-Demo account (798 symbols enumerated). Broker symbol
+# spelling is NOT standardized (e.g. "US Oil" with a space, not "USOIL") --
+# always resolve through this map rather than assuming the canonical name
+# is tradable as-is. Confirmed real D1 history depth as of this check:
+#   XAUUSD  -> XAUUSD   2011-01-02..2026-09-03 (~15.7y)
+#   XAGUSD  -> XAGUSD   2011-01-02..2026-09-03 (~15.7y)
+#   USOIL   -> US Oil   2024-01-22..2026-09-03 (~2.6y only -- far short of 16y)
+#   BTCUSD  -> BTCUSD   2011-03-23..2026-09-03 (~15.4y)
+#   ETHUSD  -> ETHUSD   2015-08-07..2026-09-03 (~11.1y)
+BROKER_SYMBOL_MAP = {
+    "XAUUSD": "XAUUSD",
+    "XAGUSD": "XAGUSD",
+    "USOIL": "US Oil",
+    "BTCUSD": "BTCUSD",
+    "ETHUSD": "ETHUSD",
+}
+
 # MT5 timeframe constants are looked up lazily (import MetaTrader5 only
 # inside functions that need it) so this module stays importable in
 # environments/tests without the MT5 terminal installed.
@@ -45,28 +63,32 @@ def _normalize(df: pd.DataFrame, ts_col: str, unit: str | None, venue: str) -> p
 
 def fetch_mt5(symbol: str, timeframe: str, start: pd.Timestamp, end: pd.Timestamp) -> pd.DataFrame:
     """Pull whatever history the connected MT5 terminal/broker has for
-    `symbol`. Returns an empty frame (with a logged warning) if the symbol
-    isn't found or MT5 isn't reachable -- callers must handle that, not
-    assume success.
+    `symbol` (a canonical name, e.g. "USOIL" -- resolved through
+    BROKER_SYMBOL_MAP to this broker's actual spelling, e.g. "US Oil").
+    Returns an empty frame (with a logged warning) if the symbol isn't
+    found or MT5 isn't reachable -- callers must handle that, not assume
+    success.
     """
     import MetaTrader5 as mt5
+
+    broker_symbol = BROKER_SYMBOL_MAP.get(symbol, symbol)
 
     if not mt5.initialize():
         logger.warning("MT5 initialize() failed: %s", mt5.last_error())
         return _normalize(pd.DataFrame(), "timestamp", None, venue=f"mt5:unknown")
 
     try:
-        info = mt5.symbol_info(symbol)
+        info = mt5.symbol_info(broker_symbol)
         if info is None:
-            logger.warning("Symbol %s not found on this broker", symbol)
+            logger.warning("Symbol %s (broker name %r) not found on this broker", symbol, broker_symbol)
             return _normalize(pd.DataFrame(), "timestamp", None, venue="mt5:unknown")
         if not info.visible:
-            mt5.symbol_select(symbol, True)
+            mt5.symbol_select(broker_symbol, True)
 
         tf_const = getattr(mt5, MT5_TIMEFRAMES[timeframe])
-        rates = mt5.copy_rates_range(symbol, tf_const, start.to_pydatetime(), end.to_pydatetime())
+        rates = mt5.copy_rates_range(broker_symbol, tf_const, start.to_pydatetime(), end.to_pydatetime())
         if rates is None or len(rates) == 0:
-            logger.warning("No rates returned for %s %s in requested range", symbol, timeframe)
+            logger.warning("No rates returned for %s (broker name %r) %s in requested range", symbol, broker_symbol, timeframe)
             return _normalize(pd.DataFrame(), "timestamp", None, venue="mt5:unknown")
 
         df = pd.DataFrame(rates)
