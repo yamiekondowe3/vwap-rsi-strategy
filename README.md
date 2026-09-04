@@ -20,18 +20,18 @@ realistic costs out-of-sample.** See `common/costs.py` for the friction
 model and `common/wfo.py` / `common/monte_carlo.py` for the validation
 harness this repo is built around.
 
-## Real-data result (headline finding)
+## Real-data result (headline finding): FAIL
 
 Full 15.7-year XAUUSD history was pulled from the connected MT5 demo
-account (Deriv-Demo). With default/un-optimized parameters, the strategy
-lost **-71.8%** with a Sharpe of **-4.07** and a Monte Carlo ruin
-probability of **~100%**. This **fails the go/no-go gate** — see
-`reports/data_coverage.md` and `reports/xauusd_vwap_rsi_real_data_results.json`
-for the full numbers, and `backtest/run_wfo_xauusd.py` /
-`reports/xauusd_vwap_rsi_wfo_method1_results.json` for the real (grid-search,
-not hand-tuned) walk-forward optimization check on whether any parameter
-region survives out-of-sample. This result is reported as-is per the
-project's honesty mandate, not smoothed over.
+account (Deriv-Demo). Default parameters lost **-71.8%** (Sharpe -4.07,
+~100% Monte Carlo ruin probability). A genuine walk-forward grid search
+(not hand-tuned to look better) across all 13 available 2011-2026
+IS/OOS windows confirms it wasn't just bad luck: **only 2/13 windows had
+positive out-of-sample return, mean OOS Sharpe -3.81.** VWAP+RSI has no
+real edge on XAUUSD — see `reports/data_coverage.md` for the full
+writeup and `reports/xauusd_vwap_rsi_real_data_results.json` /
+`reports/xauusd_vwap_rsi_wfo_method1_results.json` for the raw numbers.
+Reported as-is per the project's honesty mandate, not smoothed over.
 
 ## Current state
 

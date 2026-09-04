@@ -54,11 +54,31 @@ This fails the plan's go/no-go gate decisively with default parameters.
 Per the research docs' explicit warning against tuning a fragile edge into
 apparent profitability, this was **not** hand-tuned to look better — instead
 a real (small, deliberately non-exhaustive) grid-search walk-forward
-optimization was run: see `backtest/run_wfo_xauusd.py` and
-`reports/xauusd_vwap_rsi_wfo_method1_results.json` for the honest
-out-of-sample verdict across the 13 available 2y-IS/1y-OOS windows.
+optimization was run: `backtest/run_wfo_xauusd.py`, grid-searching
+stop/target ATR multiples on each 2-year in-sample window (selected by IS
+Sharpe, minimum 15 trades to avoid degenerate low-sample "winners"),
+evaluated out-of-sample on the following year, across all 13 available
+2011–2026 windows.
 
-Full result JSON: `reports/xauusd_vwap_rsi_real_data_results.json`.
+**WFO verdict: FAIL.** Only 2/13 windows had positive OOS return; mean OOS
+Sharpe −3.81; mean OOS expectancy −9.18 per trade. The grid consistently
+selected wide stops (mostly 3.0x ATR) in-sample, and even the "best"
+in-sample configuration lost money out-of-sample in most years. **This
+strategy has no real edge on XAUUSD** — confirmed on real data, real
+costs, and genuine walk-forward validation, not an unlucky default-parameter
+artifact. Consistent with the research docs' prediction that VWAP
+mean-reversion has essentially no independent net-of-cost support.
+
+Full result JSONs: `reports/xauusd_vwap_rsi_real_data_results.json`,
+`reports/xauusd_vwap_rsi_wfo_method1_results.json`.
+
+**Recommendation per the plan's staged approach:** do not keep tuning this
+strategy/instrument pair looking for a positive result — that is exactly
+the overfitting risk the research docs warn about. Either (a) test
+VWAP+RSI on the other 4 assets in case the edge is instrument-specific
+(unlikely given how uniformly negative this is, but cheap to check), or
+(b) move to validating the ORB+Pivots strategy instead, which has a
+different (though similarly fragile per the research docs) mechanism.
 
 ## Not done yet
 
