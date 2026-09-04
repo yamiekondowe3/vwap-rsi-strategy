@@ -78,7 +78,11 @@ def run_backtest(df: pd.DataFrame, params: VWAPRSIParams, symbol: str, starting_
                          (position["side"] == -1 and next_row["low"] <= position["target"])
             if hit_stop or hit_target:
                 # Conservative: assume stop fills first if both are touched in one bar.
-                exit_price = position["stop"] if hit_stop else position["target"]
+                level = position["stop"] if hit_stop else position["target"]
+                # Exit crosses the spread against us too (this was missing before).
+                exit_price = level - position["side"] * friction.half_spread(
+                    ts_next, level, next_row.get("spread")
+                )
                 pnl = position["side"] * (exit_price - position["entry_price"]) * position["size"]
                 pnl -= friction.commission(abs(position["size"] * exit_price))
                 equity += pnl
@@ -98,7 +102,8 @@ def run_backtest(df: pd.DataFrame, params: VWAPRSIParams, symbol: str, starting_
         if side == 0:
             continue
 
-        entry_price = friction.apply_fill(ts_next, next_row["open"], row["atr"], side)
+        entry_price = friction.apply_fill(ts_next, next_row["open"], row["atr"], side,
+                                          bar_spread=next_row.get("spread"))
         stop = entry_price - side * params.stop_atr_mult * row["atr"]
         target = entry_price + side * params.target_atr_mult * row["atr"]
         risk_per_unit = abs(entry_price - stop)

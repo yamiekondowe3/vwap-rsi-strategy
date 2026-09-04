@@ -20,7 +20,23 @@ realistic costs out-of-sample.** See `common/costs.py` for the friction
 model and `common/wfo.py` / `common/monte_carlo.py` for the validation
 harness this repo is built around.
 
-## Real-data result (headline finding): FAIL
+## ⚠ Results below are INVALID — pending re-run after a cost-model fix
+
+The results in this section were produced with a broken `common/costs.py`
+that invented commission and spread constants instead of using the
+broker's actual terms. On XAUUSD it charged roughly **68% of the per-trade
+risk budget in fabricated costs** (a ~$16/round-trip commission Deriv does
+not charge, plus a spread ~5x the real recorded one). No strategy survives
+that, so the "no edge" verdict below cannot be attributed to the strategy.
+
+`common/costs.py` has since been corrected (real per-bar MT5 spread,
+commission defaulting to zero for spread-only CFD brokers, exit-side
+spread now charged) — see `../orb-pivots-strategy/reports/rr_sweep_finding.md`
+for the full write-up of the bug and its magnitude. **The XAUUSD backtest
+and the 13-window walk-forward optimization below both need re-running
+under the corrected model before any conclusion about VWAP+RSI stands.**
+
+## Real-data result (headline finding, UNDER THE BROKEN COST MODEL): FAIL
 
 Full 15.7-year XAUUSD history was pulled from the connected MT5 demo
 account (Deriv-Demo). Default parameters lost **-71.8%** (Sharpe -4.07,

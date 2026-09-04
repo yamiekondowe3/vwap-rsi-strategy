@@ -64,20 +64,40 @@ def test_pivots_use_prior_period_only():
         assert day_of_bar[df.index.get_loc(ts)] > known.loc[ts].name.floor("D") or True  # sanity: no exception
 
 
-def test_friction_model_commission_and_slippage_bounds():
+def test_commission_is_zero_for_spread_only_broker_but_overridable():
+    """Deriv prices these CFDs spread-only. The model must NOT invent a
+    commission (an earlier version charged ~1.5bps of notional, which on
+    XAUUSD ate 68% of the per-trade risk budget and buried every strategy
+    tested under it) -- but must still support brokers that do charge one."""
     fm = FrictionModel(symbol="XAUUSD", rng=np.random.default_rng(0))
-    notional = 200000.0
-    commission = fm.commission(notional)
-    assert commission > 0
-    # commission should be a small fraction of notional (bps-scale, not %-scale)
-    assert commission < notional * 0.001
+    assert fm.commission(200_000.0) == 0.0
 
+    charged = FrictionModel(symbol="XAUUSD", commission_bps_override=1.5,
+                            rng=np.random.default_rng(0))
+    assert charged.commission(200_000.0) == pytest.approx(200_000.0 * 1.5 / 1e4)
+
+
+def test_half_spread_prefers_real_bar_spread_over_fallback():
+    fm = FrictionModel(symbol="XAUUSD", rng=np.random.default_rng(0))
+    ts = pd.Timestamp("2024-01-01T10:00", tz="UTC")
+    # Real recorded spread wins, and is halved (it's a full spread).
+    assert fm.half_spread(ts, price=2000.0, bar_spread=0.20) == pytest.approx(0.10)
+    # Missing/invalid spread falls back to the symbol default, not to zero.
+    assert fm.half_spread(ts, price=2000.0, bar_spread=None) == pytest.approx(0.09)
+    assert fm.half_spread(ts, price=2000.0, bar_spread=float("nan")) == pytest.approx(0.09)
+
+
+def test_fills_move_against_the_trader():
+    fm = FrictionModel(symbol="XAUUSD", rng=np.random.default_rng(0))
+    ts = pd.Timestamp("2024-01-01T10:00", tz="UTC")
     price, atr_val = 2000.0, 5.0
-    fill_up = fm.apply_fill(pd.Timestamp("2024-01-01T10:00", tz="UTC"), price, atr_val, side=1)
-    fill_down = fm.apply_fill(pd.Timestamp("2024-01-01T10:00", tz="UTC"), price, atr_val, side=-1)
-    # Buys should fill at/above signal price on average; sells at/below.
-    assert fill_up >= price - 1e-9 or True  # slippage can be near-zero; just check it's finite
-    assert np.isfinite(fill_up) and np.isfinite(fill_down)
+    fill_buy = fm.apply_fill(ts, price, atr_val, side=1, bar_spread=0.20)
+    fill_sell = fm.apply_fill(ts, price, atr_val, side=-1, bar_spread=0.20)
+    # Buys fill at or above the signal price, sells at or below -- friction
+    # must never flatter the trader.
+    assert fill_buy >= price
+    assert fill_sell <= price
+    assert np.isfinite(fill_buy) and np.isfinite(fill_sell)
 
 
 def test_backtest_engine_runs_and_produces_trade_ledger():

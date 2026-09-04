@@ -17,7 +17,12 @@ logger = logging.getLogger(__name__)
 
 DATA_ROOT = Path(__file__).resolve().parent.parent / "data_cache"
 
-SCHEMA_COLUMNS = ["open", "high", "low", "close", "volume"]
+# `spread` is the broker's REAL recorded spread for that bar, converted from
+# MT5's integer points into price units. Carrying it means the backtest can
+# charge the actual historical spread instead of a guessed bps constant --
+# this matters enormously: a fabricated 1.2bps spread on XAUUSD is ~5x the
+# broker's real ~18-point ($0.18) spread.
+SCHEMA_COLUMNS = ["open", "high", "low", "close", "volume", "spread"]
 
 # Canonical asset name -> actual broker symbol name, confirmed against the
 # connected Deriv-Demo account (798 symbols enumerated). Broker symbol
@@ -93,6 +98,11 @@ def fetch_mt5(symbol: str, timeframe: str, start: pd.Timestamp, end: pd.Timestam
 
         df = pd.DataFrame(rates)
         df = df.rename(columns={"tick_volume": "volume"})
+        # MT5 reports spread in integer POINTS -- convert to price units using
+        # the symbol's own point size so the backtest can charge the real
+        # historical spread rather than a guessed constant.
+        if "spread" in df.columns:
+            df["spread"] = df["spread"] * info.point
         acc = mt5.account_info()
         venue = f"mt5:{acc.server if acc else 'unknown'}"
         normalized = _normalize(df, "time", "s", venue=venue)
