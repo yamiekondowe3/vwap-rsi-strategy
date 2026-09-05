@@ -1,5 +1,14 @@
 # What would it take to make these strategies trade-worthy?
 
+> **CORRECTION (superseded in part).** This document claimed nothing could help.
+> That was wrong on two counts: the 56.5% win-rate bar it derives is only valid at a
+> 1:1 payoff, and exits were never tested. Asymmetric exits were subsequently tested
+> and reached **PF 1.325** on XAUUSD H1. The overall conclusion still stands -- the
+> gain is drift-harvesting that a random-entry placebo captures almost as well, and
+> buy-and-hold beats every configuration -- but the reasoning below is incomplete.
+> See EXIT_LEVER_RESULTS.md for the corrected analysis.
+
+
 Scope: **XAUUSD, USOIL, BTCUSD** (XAGUSD and ETHUSD dropped). Both strategies.
 Bar: **PF > 1.3 and Sharpe > 1.0.**
 
