@@ -37,6 +37,17 @@ class VWAPRSIParams:
     # VWAP deviation-band concept (trade the 1-1.5 sigma stretch, not noise
     # around the average). 0.0 disables.
     min_vwap_dist_atr: float = 0.0
+    # Self-calibrating RSI thresholds. A hardcoded 30/70 is implicitly
+    # calibrated to ONE timeframe's noise level: RSI dispersion shrinks on
+    # coarser bars, so the same 30 that fires often on M5 becomes a rare
+    # extreme on M15 (21 trades in 15 years -- statistically useless). Using
+    # a rolling PERCENTILE of RSI's own recent distribution keeps the
+    # threshold at a constant rarity across timeframes AND instruments,
+    # with no per-market tuning. That is a structural fix, not a fitted
+    # parameter: one rule, self-adjusting everywhere.
+    adaptive_rsi: bool = False
+    rsi_pctile: float = 20.0        # enter when RSI is in its lowest/highest N% (longs/shorts)
+    rsi_pctile_window: int = 500    # trailing bars defining "recent distribution"
 
 
 def prepare_signals(df: pd.DataFrame, p: VWAPRSIParams) -> pd.DataFrame:
@@ -49,14 +60,28 @@ def prepare_signals(df: pd.DataFrame, p: VWAPRSIParams) -> pd.DataFrame:
     out["rsi"] = rsi(out["close"], p.rsi_period)
     out["atr"] = atr(out, p.atr_period)
 
+    # Entry thresholds: either fixed levels, or RSI's own trailing
+    # percentiles so the threshold means the same thing on any timeframe.
+    # The percentile window is shifted by 1 bar so the current bar's RSI
+    # never contributes to the threshold it is being tested against.
+    if p.adaptive_rsi:
+        roll = out["rsi"].rolling(p.rsi_pctile_window, min_periods=p.rsi_pctile_window // 2)
+        oversold_level = roll.quantile(p.rsi_pctile / 100.0).shift(1)
+        overbought_level = roll.quantile(1.0 - p.rsi_pctile / 100.0).shift(1)
+    else:
+        oversold_level = pd.Series(p.rsi_oversold, index=out.index)
+        overbought_level = pd.Series(p.rsi_overbought, index=out.index)
+    out["rsi_oversold_level"] = oversold_level
+    out["rsi_overbought_level"] = overbought_level
+
     # Entry filters, evaluated on the CLOSED bar (signal), executed next bar.
     long_signal = (
         (out["close"] > out["vwap"]) & out["vwap_slope_up"]
-        & (out["rsi"].shift(1) < p.rsi_oversold) & (out["rsi"] >= p.rsi_oversold)  # RSI recovering from oversold
+        & (out["rsi"].shift(1) < oversold_level) & (out["rsi"] >= oversold_level)  # RSI recovering from oversold
     )
     short_signal = (
         (out["close"] < out["vwap"]) & out["vwap_slope_down"]
-        & (out["rsi"].shift(1) > p.rsi_overbought) & (out["rsi"] <= p.rsi_overbought)
+        & (out["rsi"].shift(1) > overbought_level) & (out["rsi"] <= overbought_level)
     )
     if p.min_vwap_dist_atr > 0:
         stretched = (out["close"] - out["vwap"]).abs() >= p.min_vwap_dist_atr * out["atr"]

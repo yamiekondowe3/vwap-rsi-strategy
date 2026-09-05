@@ -71,10 +71,19 @@ class FrictionModel:
     slippage_atr_frac: float = 0.02   # mean slippage as a fraction of ATR, per side
     latency_ms_range: tuple[int, int] = (50, 250)
     commission_bps_override: float | None = None
-    rng: np.random.Generator = field(default_factory=np.random.default_rng)
+    # Seeded by default for REPRODUCIBILITY. This was an unseeded
+    # `default_rng()` and it mattered: on a 21-trade M15 sample the same
+    # configuration produced +0.018R on one run and -0.077R on the next,
+    # purely from different slippage draws. Backtests must be deterministic
+    # or results cannot be compared at all; vary the seed deliberately when
+    # you want a slippage sensitivity distribution, never by accident.
+    seed: int = 20260904
+    rng: np.random.Generator = field(default=None)
 
     def __post_init__(self):
         self.asset_class = ASSET_CLASS.get(self.symbol, "metals")
+        if self.rng is None:
+            self.rng = np.random.default_rng(self.seed)
 
     def commission(self, notional: float) -> float:
         """Per-side commission in account currency. Zero for spread-only brokers."""

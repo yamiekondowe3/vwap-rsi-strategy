@@ -1,0 +1,137 @@
+{
+  "fixed_30_70": [
+    {
+      "symbol": "XAUUSD",
+      "n_trades": 21,
+      "trades_per_year": 1.6,
+      "win_rate": 0.47619047619047616,
+      "profit_factor": 0.853625814196428,
+      "sharpe_r": -0.09555396176293002,
+      "expectancy_r": -0.07726217499112578,
+      "std_error": 0.22226077712260298,
+      "p_value": 0.7317576552101683,
+      "frictionless_expectancy_r": -0.04761904761904767,
+      "total_return_pct": -0.013114464252402369,
+      "max_drawdown_pct": -0.027287296733719324
+    },
+    {
+      "symbol": "XAGUSD",
+      "n_trades": 10,
+      "trades_per_year": 0.7,
+      "win_rate": 0.6,
+      "profit_factor": 1.3305987531776227,
+      "sharpe_r": 0.1190769012417283,
+      "expectancy_r": 0.13747520219902415,
+      "std_error": 0.3158218589023756,
+      "p_value": 0.6736015966245857,
+      "frictionless_expectancy_r": 0.19999999999999996,
+      "total_return_pct": 0.0026400377612108006,
+      "max_drawdown_pct": -0.015229384059035844
+    },
+    {
+      "symbol": "USOIL",
+      "n_trades": 3,
+      "note": "too few trades"
+    },
+    {
+      "symbol": "BTCUSD",
+      "n_trades": 34,
+      "trades_per_year": 4.3,
+      "win_rate": 0.4411764705882353,
+      "profit_factor": 0.7079362342715486,
+      "sharpe_r": -0.33925491261204943,
+      "expectancy_r": -0.16983342472617005,
+      "std_error": 0.17838533934588502,
+      "p_value": 0.3479885925310729,
+      "frictionless_expectancy_r": -0.11764705882352944,
+      "total_return_pct": -0.023771262536385396,
+      "max_drawdown_pct": -0.05962172590636039
+    },
+    {
+      "symbol": "ETHUSD",
+      "n_trades": 21,
+      "trades_per_year": 2.2,
+      "win_rate": 0.2857142857142857,
+      "profit_factor": 0.12816725553839878,
+      "sharpe_r": -0.9496475975737474,
+      "expectancy_r": -1.6342470767456214,
+      "std_error": 0.5609180206155948,
+      "p_value": 0.008590605399262662,
+      "frictionless_expectancy_r": -0.4285714285714286,
+      "total_return_pct": -0.11921143267371748,
+      "max_drawdown_pct": -0.1299379888163661
+    }
+  ],
+  "adaptive_p20": [
+    {
+      "symbol": "XAUUSD",
+      "n_trades": 1725,
+      "trades_per_year": 110.3,
+      "win_rate": 0.4927536231884058,
+      "profit_factor": 0.897752073930518,
+      "sharpe_r": -0.510426093686754,
+      "expectancy_r": -0.04865537954828239,
+      "std_error": 0.02410439511773724,
+      "p_value": 0.04369094981352851,
+      "frictionless_expectancy_r": -0.014492753623188415,
+      "total_return_pct": -0.3533666832421435,
+      "max_drawdown_pct": -0.4352360013018002
+    },
+    {
+      "symbol": "XAGUSD",
+      "n_trades": 1960,
+      "trades_per_year": 125.2,
+      "win_rate": 0.36173469387755103,
+      "profit_factor": 0.0009094288637751022,
+      "sharpe_r": -4.085108345697685,
+      "expectancy_r": -1.0565664708499571,
+      "std_error": 0.06537971737991455,
+      "p_value": 3.0422084850025503e-55,
+      "frictionless_expectancy_r": -0.276530612244898,
+      "total_return_pct": -0.9999737899657402,
+      "max_drawdown_pct": -0.9999745861878184
+    },
+    {
+      "symbol": "USOIL",
+      "n_trades": 223,
+      "trades_per_year": 85.5,
+      "win_rate": 0.4260089686098655,
+      "profit_factor": 0.7102901728658809,
+      "sharpe_r": -1.5983019113771402,
+      "expectancy_r": -0.1708536656720536,
+      "std_error": 0.06620811670977296,
+      "p_value": 0.010508399347655916,
+      "frictionless_expectancy_r": -0.14798206278026904,
+      "total_return_pct": -0.17977244932927883,
+      "max_drawdown_pct": -0.18379274156670444
+    },
+    {
+      "symbol": "BTCUSD",
+      "n_trades": 2020,
+      "trades_per_year": 153.9,
+      "win_rate": 0.4861386138613861,
+      "profit_factor": 0.8605223383953179,
+      "sharpe_r": -0.8253805389728017,
+      "expectancy_r": -0.06691442721230578,
+      "std_error": 0.022379084108823076,
+      "p_value": 0.002823096065270925,
+      "frictionless_expectancy_r": -0.027722772277227747,
+      "total_return_pct": -0.5061634828665962,
+      "max_drawdown_pct": -0.5233750169777681
+    },
+    {
+      "symbol": "ETHUSD",
+      "n_trades": 2061,
+      "trades_per_year": 205.3,
+      "win_rate": 0.40950994662785056,
+      "profit_factor": 0.019182881007915525,
+      "sharpe_r": -4.252672009864163,
+      "expectancy_r": -0.6544923600093151,
+      "std_error": 0.04857663016558183,
+      "p_value": 1.0238495922196386e-39,
+      "frictionless_expectancy_r": -0.18098010674429887,
+      "total_return_pct": -0.9989295053086331,
+      "max_drawdown_pct": -0.9989545639422951
+    }
+  ]
+}
