@@ -93,9 +93,13 @@ def prepare_signals(df: pd.DataFrame, p: VWAPRSIParams) -> pd.DataFrame:
     return out
 
 
-def run_backtest(df: pd.DataFrame, params: VWAPRSIParams, symbol: str, starting_equity: float = 10_000.0) -> dict:
+def run_backtest(df: pd.DataFrame, params: VWAPRSIParams, symbol: str, starting_equity: float = 10_000.0,
+                 friction: FrictionModel | None = None) -> dict:
+    """`friction` may be injected to override the default cost model -- e.g. a
+    `FrictionModel(frictionless=True)` to measure the signal's ceiling."""
     sig = prepare_signals(df, params)
-    friction = FrictionModel(symbol=symbol)
+    if friction is None:
+        friction = FrictionModel(symbol=symbol)
 
     equity = starting_equity
     position = None  # dict with side, entry_price, stop, target, size, entry_ts

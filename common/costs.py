@@ -79,6 +79,11 @@ class FrictionModel:
     # you want a slippage sensitivity distribution, never by accident.
     seed: int = 20260904
     rng: np.random.Generator = field(default=None)
+    # Diagnostic mode: charge NOTHING. Used to measure a signal's ceiling --
+    # if a strategy cannot clear the bar even with execution costs removed
+    # entirely, no execution or venue improvement can ever get it there, and
+    # further work on costs is pointless. Never use for a tradable result.
+    frictionless: bool = False
 
     def __post_init__(self):
         self.asset_class = ASSET_CLASS.get(self.symbol, "metals")
@@ -87,6 +92,8 @@ class FrictionModel:
 
     def commission(self, notional: float) -> float:
         """Per-side commission in account currency. Zero for spread-only brokers."""
+        if self.frictionless:
+            return 0.0
         bps = self.commission_bps_override
         if bps is None:
             bps = COMMISSION_BPS[self.asset_class]
@@ -98,6 +105,8 @@ class FrictionModel:
         Prefers the broker's REAL recorded spread for that bar; falls back
         to a symbol default only when unavailable.
         """
+        if self.frictionless:
+            return 0.0
         if bar_spread is not None and np.isfinite(bar_spread) and bar_spread > 0:
             hs = bar_spread / 2.0
         else:
@@ -117,7 +126,7 @@ class FrictionModel:
         occasionally produce much worse fills -- matching real behavior
         around breakouts and news.
         """
-        if atr <= 0 or not np.isfinite(atr):
+        if self.frictionless or atr <= 0 or not np.isfinite(atr):
             return 0.0
         magnitude = abs(self.rng.normal(loc=self.slippage_atr_frac, scale=self.slippage_atr_frac)) * atr
         return side * magnitude
