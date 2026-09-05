@@ -20,23 +20,36 @@ realistic costs out-of-sample.** See `common/costs.py` for the friction
 model and `common/wfo.py` / `common/monte_carlo.py` for the validation
 harness this repo is built around.
 
-## ⚠ Results below are INVALID — pending re-run after a cost-model fix
+## Final verdict: not profitable out-of-sample — see `reports/FINAL_VERDICT.md`
 
-The results in this section were produced with a broken `common/costs.py`
-that invented commission and spread constants instead of using the
-broker's actual terms. On XAUUSD it charged roughly **68% of the per-trade
-risk budget in fabricated costs** (a ~$16/round-trip commission Deriv does
-not charge, plus a spread ~5x the real recorded one). No strategy survives
-that, so the "no edge" verdict below cannot be attributed to the strategy.
+Re-run under a **corrected cost model** (the earlier results here were
+produced with fabricated commission/spread constants consuming ~68% of the
+per-trade risk budget — that bug is fixed: real per-bar MT5 spread, zero
+commission for Deriv's spread-only CFDs, exit-side spread now charged).
 
-`common/costs.py` has since been corrected (real per-bar MT5 spread,
-commission defaulting to zero for spread-only CFD brokers, exit-side
-spread now charged) — see `../orb-pivots-strategy/reports/rr_sweep_finding.md`
-for the full write-up of the bug and its magnitude. **The XAUUSD backtest
-and the 13-window walk-forward optimization below both need re-running
-under the corrected model before any conclusion about VWAP+RSI stands.**
+**Headline, default parameters, full 15.67y XAUUSD M5:** Sharpe **-0.71**
+(was -4.07 under the broken model), total return **-35.7%** (was -71.8%),
+win rate **48.8%**, expectancy **-0.090 R/trade**. Friction costs ~0.13R
+per round trip while the signal's own deficit is only ~0.025R — **most of
+the loss is friction, not signal.**
 
-## Real-data result (headline finding, UNDER THE BROKEN COST MODEL): FAIL
+**Walk-forward (13 windows × 9 combos, params chosen in-sample only):**
+3/13 windows positive, mean OOS expectancy **-0.121 R/trade** over 575
+out-of-sample trades, mean R-normalized Sharpe **-0.786**.
+
+**The decisive diagnostic:** in-sample optimization has **zero predictive
+power** for out-of-sample results — IS→OOS correlation r=+0.109 (p=0.72),
+and the mean OOS result for windows with a positive in-sample edge
+(-0.1214 R) is *identical to four decimals* to that for windows with a
+negative one (-0.1214 R). The optimizer cannot tell in advance which
+parameters will work, because the in-sample differences it selects on are
+noise. That is also why a bigger grid search would not help.
+
+Verdict: **negative, but closer to viable than ORB** — and the highest-
+leverage change is lower friction (e.g. a higher timeframe amortizing the
+same spread over larger stops), not more parameter search.
+
+## Prior stage (UNDER THE BROKEN COST MODEL — superseded, kept for the record): FAIL
 
 Full 15.7-year XAUUSD history was pulled from the connected MT5 demo
 account (Deriv-Demo). Default parameters lost **-71.8%** (Sharpe -4.07,

@@ -42,7 +42,8 @@ def main():
         print("Too few trades for meaningful stats.")
         return
 
-    report = full_report(trades["pnl"], trades["return"])
+    report = full_report(trades["pnl"], trades["return"],
+                         r_multiples=trades["r_multiple"], entry_ts=trades["entry_ts"])
     print("\n--- Performance report (REAL DATA, default un-optimized params) ---")
     print(json.dumps(report, indent=2, default=str))
 

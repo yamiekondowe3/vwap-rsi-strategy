@@ -31,6 +31,12 @@ class VWAPRSIParams:
     target_atr_mult: float = 2.0   # 1.0R by default; tune per go/no-go gate
     risk_pct: float = 0.005        # 0.5% equity risk per trade
     day_boundary_hour_utc: int = 0  # daily VWAP reset anchor
+    # Selectivity: require price to have actually stretched away from VWAP
+    # before taking the pullback, rather than firing on any RSI cross near
+    # the mean. This is the mechanical stand-in for the research docs'
+    # VWAP deviation-band concept (trade the 1-1.5 sigma stretch, not noise
+    # around the average). 0.0 disables.
+    min_vwap_dist_atr: float = 0.0
 
 
 def prepare_signals(df: pd.DataFrame, p: VWAPRSIParams) -> pd.DataFrame:
@@ -52,6 +58,11 @@ def prepare_signals(df: pd.DataFrame, p: VWAPRSIParams) -> pd.DataFrame:
         (out["close"] < out["vwap"]) & out["vwap_slope_down"]
         & (out["rsi"].shift(1) > p.rsi_overbought) & (out["rsi"] <= p.rsi_overbought)
     )
+    if p.min_vwap_dist_atr > 0:
+        stretched = (out["close"] - out["vwap"]).abs() >= p.min_vwap_dist_atr * out["atr"]
+        long_signal &= stretched.fillna(False)
+        short_signal &= stretched.fillna(False)
+
     out["long_signal"] = long_signal.fillna(False)
     out["short_signal"] = short_signal.fillna(False)
     return out
@@ -91,6 +102,9 @@ def run_backtest(df: pd.DataFrame, params: VWAPRSIParams, symbol: str, starting_
                     "side": position["side"], "entry_price": position["entry_price"],
                     "exit_price": exit_price, "size": position["size"],
                     "pnl": pnl, "return": pnl / position["equity_at_entry"],
+                    # Normalized edge: pnl per unit of capital actually risked.
+                    "risk_amount": position["risk_amount"],
+                    "r_multiple": pnl / position["risk_amount"] if position["risk_amount"] > 0 else np.nan,
                 })
                 position = None
             continue
@@ -114,6 +128,7 @@ def run_backtest(df: pd.DataFrame, params: VWAPRSIParams, symbol: str, starting_
         position = {
             "side": side, "entry_price": entry_price, "stop": stop, "target": target,
             "size": size, "entry_ts": ts_next, "equity_at_entry": equity,
+            "risk_amount": params.risk_pct * equity,
         }
 
     trades_df = pd.DataFrame(trades)

@@ -1,0 +1,190 @@
+{
+  "grid": {
+    "rr_shapes": [
+      [
+        2.0,
+        2.0
+      ],
+      [
+        2.0,
+        1.5
+      ],
+      [
+        1.0,
+        2.0
+      ]
+    ],
+    "min_vwap_dist_atrs": [
+      0.0,
+      0.5,
+      1.0
+    ]
+  },
+  "windows": [
+    {
+      "oos_year": "2013-01-02",
+      "chosen_rr": "2.0:2.0",
+      "chosen_min_vwap_dist_atr": 1.0,
+      "is_expectancy_r": 0.1727,
+      "is_n_trades": 52,
+      "oos_n_trades": 44,
+      "oos_expectancy_r": 0.0221,
+      "oos_win_rate": 0.5455,
+      "oos_sharpe_r": 0.15,
+      "oos_total_return_pct": 0.0001
+    },
+    {
+      "oos_year": "2014-01-02",
+      "chosen_rr": "2.0:2.0",
+      "chosen_min_vwap_dist_atr": 0.5,
+      "is_expectancy_r": 0.1404,
+      "is_n_trades": 99,
+      "oos_n_trades": 56,
+      "oos_expectancy_r": -0.2169,
+      "oos_win_rate": 0.4643,
+      "oos_sharpe_r": -1.631,
+      "oos_total_return_pct": -0.0544
+    },
+    {
+      "oos_year": "2015-01-02",
+      "chosen_rr": "2.0:2.0",
+      "chosen_min_vwap_dist_atr": 1.0,
+      "is_expectancy_r": -0.012,
+      "is_n_trades": 91,
+      "oos_n_trades": 31,
+      "oos_expectancy_r": -0.2771,
+      "oos_win_rate": 0.4194,
+      "oos_sharpe_r": -1.584,
+      "oos_total_return_pct": -0.0373
+    },
+    {
+      "oos_year": "2016-01-02",
+      "chosen_rr": "2.0:2.0",
+      "chosen_min_vwap_dist_atr": 1.0,
+      "is_expectancy_r": -0.1488,
+      "is_n_trades": 77,
+      "oos_n_trades": 34,
+      "oos_expectancy_r": -0.0178,
+      "oos_win_rate": 0.5294,
+      "oos_sharpe_r": -0.102,
+      "oos_total_return_pct": -0.0081
+    },
+    {
+      "oos_year": "2017-01-02",
+      "chosen_rr": "2.0:1.5",
+      "chosen_min_vwap_dist_atr": 1.0,
+      "is_expectancy_r": -0.0733,
+      "is_n_trades": 65,
+      "oos_n_trades": 19,
+      "oos_expectancy_r": -0.1933,
+      "oos_win_rate": 0.5263,
+      "oos_sharpe_r": -1.009,
+      "oos_total_return_pct": -0.0132
+    },
+    {
+      "oos_year": "2018-01-02",
+      "chosen_rr": "2.0:1.5",
+      "chosen_min_vwap_dist_atr": 0.0,
+      "is_expectancy_r": 0.0447,
+      "is_n_trades": 104,
+      "oos_n_trades": 60,
+      "oos_expectancy_r": -0.2125,
+      "oos_win_rate": 0.5,
+      "oos_sharpe_r": -1.885,
+      "oos_total_return_pct": -0.065
+    },
+    {
+      "oos_year": "2019-01-02",
+      "chosen_rr": "2.0:1.5",
+      "chosen_min_vwap_dist_atr": 0.0,
+      "is_expectancy_r": -0.1122,
+      "is_n_trades": 101,
+      "oos_n_trades": 60,
+      "oos_expectancy_r": 0.0809,
+      "oos_win_rate": 0.65,
+      "oos_sharpe_r": 0.745,
+      "oos_total_return_pct": 0.0294
+    },
+    {
+      "oos_year": "2020-01-02",
+      "chosen_rr": "2.0:2.0",
+      "chosen_min_vwap_dist_atr": 1.0,
+      "is_expectancy_r": 0.076,
+      "is_n_trades": 61,
+      "oos_n_trades": 18,
+      "oos_expectancy_r": -0.1376,
+      "oos_win_rate": 0.4444,
+      "oos_sharpe_r": -0.58,
+      "oos_total_return_pct": -0.0074
+    },
+    {
+      "oos_year": "2021-01-02",
+      "chosen_rr": "2.0:2.0",
+      "chosen_min_vwap_dist_atr": 0.5,
+      "is_expectancy_r": 0.1953,
+      "is_n_trades": 71,
+      "oos_n_trades": 42,
+      "oos_expectancy_r": 0.0731,
+      "oos_win_rate": 0.5476,
+      "oos_sharpe_r": 0.496,
+      "oos_total_return_pct": 0.0201
+    },
+    {
+      "oos_year": "2022-01-02",
+      "chosen_rr": "2.0:2.0",
+      "chosen_min_vwap_dist_atr": 0.5,
+      "is_expectancy_r": 0.0201,
+      "is_n_trades": 69,
+      "oos_n_trades": 34,
+      "oos_expectancy_r": -0.0764,
+      "oos_win_rate": 0.4706,
+      "oos_sharpe_r": -0.447,
+      "oos_total_return_pct": -0.0181
+    },
+    {
+      "oos_year": "2023-01-02",
+      "chosen_rr": "2.0:2.0",
+      "chosen_min_vwap_dist_atr": 0.5,
+      "is_expectancy_r": 0.006,
+      "is_n_trades": 76,
+      "oos_n_trades": 38,
+      "oos_expectancy_r": -0.3018,
+      "oos_win_rate": 0.3684,
+      "oos_sharpe_r": -1.978,
+      "oos_total_return_pct": -0.0508
+    },
+    {
+      "oos_year": "2024-01-02",
+      "chosen_rr": "2.0:1.5",
+      "chosen_min_vwap_dist_atr": 0.0,
+      "is_expectancy_r": -0.12,
+      "is_n_trades": 110,
+      "oos_n_trades": 57,
+      "oos_expectancy_r": -0.0996,
+      "oos_win_rate": 0.5263,
+      "oos_sharpe_r": -0.854,
+      "oos_total_return_pct": -0.0321
+    },
+    {
+      "oos_year": "2025-01-02",
+      "chosen_rr": "1.0:2.0",
+      "chosen_min_vwap_dist_atr": 0.5,
+      "is_expectancy_r": -0.0914,
+      "is_n_trades": 90,
+      "oos_n_trades": 82,
+      "oos_expectancy_r": -0.2216,
+      "oos_win_rate": 0.2683,
+      "oos_sharpe_r": -1.54,
+      "oos_total_return_pct": -0.0975
+    }
+  ],
+  "summary": {
+    "mean_oos_expectancy_r": -0.12142307692307693,
+    "positive_windows": 3,
+    "total_windows": 13,
+    "total_oos_trades": 575,
+    "mean_oos_win_rate": 0.4815769230769231,
+    "mean_oos_sharpe_r": -0.7860769230769231,
+    "verdict": "NOT profitable out-of-sample"
+  }
+}
