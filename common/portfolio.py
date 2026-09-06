@@ -116,6 +116,58 @@ def random_gate_placebo(returns: pd.Series, time_in_market: float, n_runs: int =
             "max_dd_mean": float(np.mean(dds))}
 
 
+def effective_sample_size(n: int, avg_correlation: float) -> float:
+    """How many INDEPENDENT observations a set of n correlated ones is worth.
+
+    Testing a rule on 30 crypto pairs is not 30 independent tests: they share
+    a dominant BTC factor. For n estimates with average pairwise correlation
+    rho, the variance of their mean behaves like that of
+    `n / (1 + (n-1)*rho)` independent estimates. At rho=0.7 and n=30 that is
+    under 2 — which is why a "25 of 30 assets improved" headline must be
+    reported next to this number rather than on its own.
+    """
+    if n <= 1:
+        return float(n)
+    rho = float(np.clip(avg_correlation, 0.0, 0.999))
+    return float(n / (1.0 + (n - 1) * rho))
+
+
+def average_pairwise_correlation(returns: pd.DataFrame) -> float:
+    c = returns.corr().to_numpy()
+    iu = np.triu_indices_from(c, k=1)
+    vals = c[iu]
+    vals = vals[np.isfinite(vals)]
+    return float(vals.mean()) if len(vals) else 0.0
+
+
+def block_bootstrap_ci(returns: pd.Series, stat_fn, block_size: int = 63,
+                       n_boot: int = 1000, alpha: float = 0.05,
+                       seed: int = 17) -> tuple[float, float]:
+    """Confidence interval that respects serial dependence.
+
+    Financial returns are not i.i.d. — volatility clusters — so an ordinary
+    bootstrap that resamples single days destroys exactly the structure this
+    strategy trades and returns intervals that are far too narrow. Resampling
+    contiguous blocks (default ~one quarter) preserves it. Time blocks are
+    the genuinely independent dimension here, which is why this is the right
+    CI to quote rather than one taken across correlated assets.
+    """
+    rng = np.random.default_rng(seed)
+    r = returns.dropna().to_numpy()
+    n = len(r)
+    if n < block_size * 2:
+        return (np.nan, np.nan)
+    n_blocks = int(np.ceil(n / block_size))
+    starts_pool = np.arange(0, n - block_size + 1)
+    stats = []
+    for _ in range(n_boot):
+        starts = rng.choice(starts_pool, size=n_blocks, replace=True)
+        sample = np.concatenate([r[s:s + block_size] for s in starts])[:n]
+        stats.append(stat_fn(pd.Series(sample)))
+    lo, hi = np.percentile(stats, [100 * alpha / 2, 100 * (1 - alpha / 2)])
+    return float(lo), float(hi)
+
+
 def ulcer_index(equity: pd.Series) -> float:
     """RMS drawdown — penalises deep AND long drawdowns, unlike max DD alone."""
     dd = equity / equity.cummax() - 1.0

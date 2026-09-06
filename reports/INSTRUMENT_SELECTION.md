@@ -1,5 +1,12 @@
 # Instrument selection — best 2 per strategy
 
+> **RETRACTED.** The ETHUSD recommendation below does not survive cross-sectional
+> validation. Running the identical fixed overlay across 26 crypto pairs shows the median
+> asset is made WORSE (median dSharpe -0.139), only 6/26 improve on both measures, and
+> ETHUSD sits at the 96th percentile -- exactly what picking best-of-5 produces by chance
+> (P=0.33). Do not trade this. See CROSSSECTION_VALIDATION.md.
+
+
 **Correction up front:** my previous message named **BTCUSD** as the standout for the risk
 overlay, on the strength of a full-sample Bonferroni-surviving z of 2.80. Rolling
 out-of-sample validation does **not** support that. BTCUSD wins only 6 of 12 drawdown
