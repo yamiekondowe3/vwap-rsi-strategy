@@ -1,0 +1,677 @@
+{
+  "candidates": [
+    {
+      "name": "ORB vol2x",
+      "strategy": "ORB",
+      "symbol": "XAUUSD",
+      "tf": "H1",
+      "ceiling_er": 0.1158,
+      "cross_section": false,
+      "n_trades": 303,
+      "win_rate": 0.5445544554455446,
+      "profit_factor": 1.1591511599471795,
+      "expectancy_r": 0.07661327524106391,
+      "sharpe_r": 0.3392550748055513,
+      "p_value": 0.18206900715219562,
+      "placebo_er": -0.0428756270375637,
+      "placebo_z": 2.0426353190121866
+    },
+    {
+      "name": "ORB vol2x",
+      "strategy": "ORB",
+      "symbol": "BTCUSD",
+      "tf": "H1",
+      "ceiling_er": 0.1149,
+      "cross_section": true,
+      "n_trades": 191,
+      "win_rate": 0.5392670157068062,
+      "profit_factor": 1.1585426864196584,
+      "expectancy_r": 0.07262988076641647,
+      "sharpe_r": 0.38485856951332026,
+      "p_value": 0.3172091998357804,
+      "placebo_er": -0.027381535668321258,
+      "placebo_z": 1.2840016364779443
+    },
+    {
+      "name": "VWAP+RSI p10",
+      "strategy": "VWAP+RSI",
+      "symbol": "BTCUSD",
+      "tf": "M15",
+      "ceiling_er": 0.0961,
+      "cross_section": true,
+      "n_trades": 226,
+      "win_rate": 0.5486725663716814,
+      "profit_factor": 1.1903141938873998,
+      "expectancy_r": 0.09141453132991503,
+      "sharpe_r": 0.6695445837465991,
+      "p_value": 0.16965293059985223,
+      "placebo_er": -0.0331512470119678,
+      "placebo_z": 1.8256431527051795
+    }
+  ],
+  "cross_section": {
+    "ORB vol2x|BTCUSD|H1": {
+      "n_assets": 33,
+      "positive": 9,
+      "median_er": -0.08006539274100373,
+      "rho": 0.007550099718851045,
+      "effective_n": 26.578539938622033,
+      "pass": false,
+      "rows": [
+        {
+          "symbol": "AAVUSD",
+          "n_trades": 146,
+          "win_rate": 0.4726027397260274,
+          "profit_factor": 0.8860954445887422,
+          "expectancy_r": -0.05865205393517273,
+          "sharpe_r": -0.3568713058657359,
+          "p_value": 0.4809599674065956
+        },
+        {
+          "symbol": "ADAUSD",
+          "n_trades": 149,
+          "win_rate": 0.5369127516778524,
+          "profit_factor": 1.0037904257234171,
+          "expectancy_r": 0.005709338108794829,
+          "sharpe_r": 0.026010320922175735,
+          "p_value": 0.9545864697742109
+        },
+        {
+          "symbol": "ALGUSD",
+          "n_trades": 193,
+          "win_rate": 0.5077720207253886,
+          "profit_factor": 1.0028315287238856,
+          "expectancy_r": 0.003883897242089631,
+          "sharpe_r": 0.02453242124806316,
+          "p_value": 0.9570862727555268
+        },
+        {
+          "symbol": "APEUSD",
+          "n_trades": 91,
+          "win_rate": 0.5164835164835165,
+          "profit_factor": 1.0353268873237227,
+          "expectancy_r": 0.020053336548291487,
+          "sharpe_r": 0.0945705836495995,
+          "p_value": 0.8537388840997326
+        },
+        {
+          "symbol": "APTUSD",
+          "n_trades": 53,
+          "win_rate": 0.4716981132075472,
+          "profit_factor": 0.581556181154419,
+          "expectancy_r": -0.26325420959943,
+          "sharpe_r": -1.4191120797130554,
+          "p_value": 0.0714399382523776
+        },
+        {
+          "symbol": "AVAUSD",
+          "n_trades": 161,
+          "win_rate": 0.5590062111801242,
+          "profit_factor": 1.2550437885094832,
+          "expectancy_r": 0.11233004341409572,
+          "sharpe_r": 0.6684735177760542,
+          "p_value": 0.15407988819831397
+        },
+        {
+          "symbol": "BATUSD",
+          "n_trades": 190,
+          "win_rate": 0.5105263157894737,
+          "profit_factor": 0.9484888079988232,
+          "expectancy_r": -0.0244492900723098,
+          "sharpe_r": -0.15088621903829924,
+          "p_value": 0.7409934894422944
+        },
+        {
+          "symbol": "BCHUSD",
+          "n_trades": 188,
+          "win_rate": 0.4574468085106383,
+          "profit_factor": 0.6410632038005332,
+          "expectancy_r": -0.21008083394757848,
+          "sharpe_r": -1.0521755860900348,
+          "p_value": 0.00672844213775999
+        },
+        {
+          "symbol": "BNBUSD",
+          "n_trades": 168,
+          "win_rate": 0.5476190476190477,
+          "profit_factor": 1.172507869422904,
+          "expectancy_r": 0.08084704557659747,
+          "sharpe_r": 0.40394221513705475,
+          "p_value": 0.3010575145742643
+        },
+        {
+          "symbol": "COMUSD",
+          "n_trades": 65,
+          "win_rate": 0.5230769230769231,
+          "profit_factor": 1.042099684373611,
+          "expectancy_r": 0.022967894748945464,
+          "sharpe_r": 0.14103240535704223,
+          "p_value": 0.8545617203860002
+        },
+        {
+          "symbol": "DOGUSD",
+          "n_trades": 150,
+          "win_rate": 0.49333333333333335,
+          "profit_factor": 0.9458620971673963,
+          "expectancy_r": -0.025722651005943706,
+          "sharpe_r": -0.14332754756264832,
+          "p_value": 0.7536967733620853
+        },
+        {
+          "symbol": "DOTUSD",
+          "n_trades": 195,
+          "win_rate": 0.5282051282051282,
+          "profit_factor": 1.0998686551688936,
+          "expectancy_r": 0.05035630667208067,
+          "sharpe_r": 0.3181096467259663,
+          "p_value": 0.4849287515573262
+        },
+        {
+          "symbol": "DSHUSD",
+          "n_trades": 200,
+          "win_rate": 0.495,
+          "profit_factor": 0.9206024998443207,
+          "expectancy_r": -0.03780167891267622,
+          "sharpe_r": -0.20382157628160988,
+          "p_value": 0.5959965077355427
+        },
+        {
+          "symbol": "ETCUSD",
+          "n_trades": 124,
+          "win_rate": 0.47580645161290325,
+          "profit_factor": 0.8455042129096904,
+          "expectancy_r": -0.08006539274100373,
+          "sharpe_r": -0.39663780260062276,
+          "p_value": 0.38617859903522456
+        },
+        {
+          "symbol": "ETHUSD",
+          "n_trades": 168,
+          "win_rate": 0.5357142857142857,
+          "profit_factor": 1.0956688022709387,
+          "expectancy_r": 0.047508645294536314,
+          "sharpe_r": 0.2357009221869643,
+          "p_value": 0.540170340491119
+        },
+        {
+          "symbol": "FILUSD",
+          "n_trades": 135,
+          "win_rate": 0.4666666666666667,
+          "profit_factor": 0.7469762295410844,
+          "expectancy_r": -0.15453901339126422,
+          "sharpe_r": -0.759939176383822,
+          "p_value": 0.09799510360076445
+        },
+        {
+          "symbol": "IMXUSD",
+          "n_trades": 68,
+          "win_rate": 0.22058823529411764,
+          "profit_factor": 0.1247301947185174,
+          "expectancy_r": -1.3740571707586866,
+          "sharpe_r": -5.185592413223288,
+          "p_value": 5.1652573507451735e-09
+        },
+        {
+          "symbol": "IOTUSD",
+          "n_trades": 205,
+          "win_rate": 0.47804878048780486,
+          "profit_factor": 0.8008692105625151,
+          "expectancy_r": -0.11041392821787206,
+          "sharpe_r": -0.5048173030643844,
+          "p_value": 0.19616777960135184
+        },
+        {
+          "symbol": "LNKUSD",
+          "n_trades": 138,
+          "win_rate": 0.4782608695652174,
+          "profit_factor": 0.8926292715677145,
+          "expectancy_r": -0.05310708286231438,
+          "sharpe_r": -0.283433392874537,
+          "p_value": 0.5346247418105556
+        },
+        {
+          "symbol": "LTCUSD",
+          "n_trades": 191,
+          "win_rate": 0.47643979057591623,
+          "profit_factor": 0.8352135113906737,
+          "expectancy_r": -0.08522801341667323,
+          "sharpe_r": -0.45649329126922145,
+          "p_value": 0.2424062897525373
+        },
+        {
+          "symbol": "MLNUSD",
+          "n_trades": 68,
+          "win_rate": 0.20588235294117646,
+          "profit_factor": 0.09061784972060993,
+          "expectancy_r": -1.670379119107751,
+          "sharpe_r": -4.488638682660968,
+          "p_value": 4.232565899604788e-07
+        },
+        {
+          "symbol": "NEOUSD",
+          "n_trades": 180,
+          "win_rate": 0.4777777777777778,
+          "profit_factor": 0.868220827986741,
+          "expectancy_r": -0.06742033762158325,
+          "sharpe_r": -0.34841196779411243,
+          "p_value": 0.3709123327785844
+        },
+        {
+          "symbol": "NERUSD",
+          "n_trades": 72,
+          "win_rate": 0.4444444444444444,
+          "profit_factor": 0.7524744799405234,
+          "expectancy_r": -0.1352539504187359,
+          "sharpe_r": -0.8916593386109598,
+          "p_value": 0.2507124794273285
+        },
+        {
+          "symbol": "SANUSD",
+          "n_trades": 57,
+          "win_rate": 0.43859649122807015,
+          "profit_factor": 0.2573030260024038,
+          "expectancy_r": -1.09786939314132,
+          "sharpe_r": -1.8696116406165344,
+          "p_value": 0.018774940332337182
+        },
+        {
+          "symbol": "SHBUSD",
+          "n_trades": 156,
+          "win_rate": 0.46794871794871795,
+          "profit_factor": 0.6321560730482781,
+          "expectancy_r": -0.22771340570526286,
+          "sharpe_r": -1.4214436837231246,
+          "p_value": 0.005900897896500979
+        },
+        {
+          "symbol": "SOLUSD",
+          "n_trades": 119,
+          "win_rate": 0.4957983193277311,
+          "profit_factor": 0.9549622462123704,
+          "expectancy_r": -0.02053592110594553,
+          "sharpe_r": -0.10156131144963719,
+          "p_value": 0.8238625811994754
+        },
+        {
+          "symbol": "TRUUSD",
+          "n_trades": 132,
+          "win_rate": 0.022727272727272728,
+          "profit_factor": 0.011527792478083545,
+          "expectancy_r": -4.576811827276345,
+          "sharpe_r": -15.40220819482872,
+          "p_value": 2.3629259764501743e-37
+        },
+        {
+          "symbol": "TRXUSD",
+          "n_trades": 204,
+          "win_rate": 0.4950980392156863,
+          "profit_factor": 0.0303484019030781,
+          "expectancy_r": -2.00103949605873,
+          "sharpe_r": -0.7970465731949096,
+          "p_value": 0.04190415629283237
+        },
+        {
+          "symbol": "UNIUSD",
+          "n_trades": 129,
+          "win_rate": 0.5348837209302325,
+          "profit_factor": 1.1108644758984438,
+          "expectancy_r": 0.05517161981003693,
+          "sharpe_r": 0.28357016627418913,
+          "p_value": 0.5339414808098089
+        },
+        {
+          "symbol": "XLMUSD",
+          "n_trades": 228,
+          "win_rate": 0.43859649122807015,
+          "profit_factor": 0.7290751334194381,
+          "expectancy_r": -0.14783760731826004,
+          "sharpe_r": -0.8683269680925662,
+          "p_value": 0.026755574300323944
+        },
+        {
+          "symbol": "XMRUSD",
+          "n_trades": 124,
+          "win_rate": 0.4032258064516129,
+          "profit_factor": 0.6334055073197683,
+          "expectancy_r": -0.22279537803538968,
+          "sharpe_r": -0.9799392382531046,
+          "p_value": 0.013374947263796398
+        },
+        {
+          "symbol": "XTZUSD",
+          "n_trades": 179,
+          "win_rate": 0.12290502793296089,
+          "profit_factor": 0.060625576935663957,
+          "expectancy_r": -1.7602974527056394,
+          "sharpe_r": -9.897798743208881,
+          "p_value": 1.399941655783401e-49
+        },
+        {
+          "symbol": "ZECUSD",
+          "n_trades": 177,
+          "win_rate": 0.4406779661016949,
+          "profit_factor": 0.6561961314191145,
+          "expectancy_r": -0.2028057278023096,
+          "sharpe_r": -0.9883908621297667,
+          "p_value": 0.011947339809421783
+        }
+      ]
+    },
+    "VWAP+RSI p10|BTCUSD|M15": {
+      "n_assets": 34,
+      "positive": 1,
+      "median_er": -0.17702552237660493,
+      "rho": -0.006068584611617526,
+      "effective_n": 34.0,
+      "pass": false,
+      "rows": [
+        {
+          "symbol": "AAVUSD",
+          "n_trades": 195,
+          "win_rate": 0.46153846153846156,
+          "profit_factor": 0.8238596783266094,
+          "expectancy_r": -0.09366970114641862,
+          "sharpe_r": -0.6636339397892581,
+          "p_value": 0.19303721063728763
+        },
+        {
+          "symbol": "ADAUSD",
+          "n_trades": 197,
+          "win_rate": 0.5025380710659898,
+          "profit_factor": 0.9091220139168373,
+          "expectancy_r": -0.04692913640889725,
+          "sharpe_r": -0.315491036821922,
+          "p_value": 0.517467191659919
+        },
+        {
+          "symbol": "ALGUSD",
+          "n_trades": 206,
+          "win_rate": 0.5194174757281553,
+          "profit_factor": 0.758089270381809,
+          "expectancy_r": -0.13099160456234418,
+          "sharpe_r": -0.3690716338134353,
+          "p_value": 0.45042185138562424
+        },
+        {
+          "symbol": "APEUSD",
+          "n_trades": 245,
+          "win_rate": 0.43673469387755104,
+          "profit_factor": 0.6823374615212516,
+          "expectancy_r": -0.21742778484760603,
+          "sharpe_r": -1.3166395594949765,
+          "p_value": 0.010039538854795076
+        },
+        {
+          "symbol": "APTUSD",
+          "n_trades": 85,
+          "win_rate": 0.49411764705882355,
+          "profit_factor": 0.8467871615081033,
+          "expectancy_r": -0.08501068675582679,
+          "sharpe_r": -0.5322073638997227,
+          "p_value": 0.4898174053909722
+        },
+        {
+          "symbol": "AVAUSD",
+          "n_trades": 165,
+          "win_rate": 0.45454545454545453,
+          "profit_factor": 0.8155993726356773,
+          "expectancy_r": -0.1000516708804986,
+          "sharpe_r": -0.6243056671924484,
+          "p_value": 0.20063757942191152
+        },
+        {
+          "symbol": "BATUSD",
+          "n_trades": 213,
+          "win_rate": 0.5023474178403756,
+          "profit_factor": 0.7546861646642056,
+          "expectancy_r": -0.14944314747380547,
+          "sharpe_r": -0.6861328459215135,
+          "p_value": 0.159135175103397
+        },
+        {
+          "symbol": "BCHUSD",
+          "n_trades": 253,
+          "win_rate": 0.36363636363636365,
+          "profit_factor": 0.44463524219867007,
+          "expectancy_r": -0.4122142922557867,
+          "sharpe_r": -3.2341001593606142,
+          "p_value": 2.2029424846478686e-10
+        },
+        {
+          "symbol": "BNBUSD",
+          "n_trades": 223,
+          "win_rate": 0.47085201793721976,
+          "profit_factor": 0.8759632209087431,
+          "expectancy_r": -0.06475262478414594,
+          "sharpe_r": -0.4720222431348209,
+          "p_value": 0.3348256624126188
+        },
+        {
+          "symbol": "COMUSD",
+          "n_trades": 92,
+          "win_rate": 0.33695652173913043,
+          "profit_factor": 0.45431601460276916,
+          "expectancy_r": -0.38084498150288976,
+          "sharpe_r": -2.9627154280648087,
+          "p_value": 0.00024517639409558104
+        },
+        {
+          "symbol": "DOGUSD",
+          "n_trades": 180,
+          "win_rate": 0.43333333333333335,
+          "profit_factor": 0.703169760022975,
+          "expectancy_r": -0.17334743623964133,
+          "sharpe_r": -1.1379023148109424,
+          "p_value": 0.020431057198976647
+        },
+        {
+          "symbol": "DOTUSD",
+          "n_trades": 199,
+          "win_rate": 0.4824120603015075,
+          "profit_factor": 0.908626760271408,
+          "expectancy_r": -0.04577253673987994,
+          "sharpe_r": -0.3120505412879424,
+          "p_value": 0.5208268770569011
+        },
+        {
+          "symbol": "DSHUSD",
+          "n_trades": 245,
+          "win_rate": 0.46530612244897956,
+          "profit_factor": 0.8029257471501795,
+          "expectancy_r": -0.10930878395275671,
+          "sharpe_r": -0.8215394553412527,
+          "p_value": 0.09226572865546588
+        },
+        {
+          "symbol": "ETCUSD",
+          "n_trades": 246,
+          "win_rate": 0.4634146341463415,
+          "profit_factor": 0.811123520279414,
+          "expectancy_r": -0.1022736642865446,
+          "sharpe_r": -0.7744568135226453,
+          "p_value": 0.11117411422612566
+        },
+        {
+          "symbol": "ETHUSD",
+          "n_trades": 190,
+          "win_rate": 0.49473684210526314,
+          "profit_factor": 0.9225305522405376,
+          "expectancy_r": -0.038560240891184025,
+          "sharpe_r": -0.2576779402223181,
+          "p_value": 0.596041542371396
+        },
+        {
+          "symbol": "FILUSD",
+          "n_trades": 298,
+          "win_rate": 0.38926174496644295,
+          "profit_factor": 0.5992383565452725,
+          "expectancy_r": -0.3070918350482322,
+          "sharpe_r": -2.2987592730553192,
+          "p_value": 3.2941867443782776e-06
+        },
+        {
+          "symbol": "IMXUSD",
+          "n_trades": 69,
+          "win_rate": 0.42028985507246375,
+          "profit_factor": 0.3757585480190208,
+          "expectancy_r": -0.617658591901706,
+          "sharpe_r": -1.7757785726789337,
+          "p_value": 0.022988298864288832
+        },
+        {
+          "symbol": "IOTUSD",
+          "n_trades": 240,
+          "win_rate": 0.475,
+          "profit_factor": 0.7005348865582257,
+          "expectancy_r": -0.18070360851356854,
+          "sharpe_r": -0.7604135225542183,
+          "p_value": 0.11828621931363667
+        },
+        {
+          "symbol": "LNKUSD",
+          "n_trades": 169,
+          "win_rate": 0.5088757396449705,
+          "profit_factor": 1.0176704567859167,
+          "expectancy_r": 0.011294725511905534,
+          "sharpe_r": 0.07137939417990555,
+          "p_value": 0.8837788030370813
+        },
+        {
+          "symbol": "LTCUSD",
+          "n_trades": 230,
+          "win_rate": 0.40869565217391307,
+          "profit_factor": 0.5542852524720698,
+          "expectancy_r": -0.2906960675578916,
+          "sharpe_r": -2.1404535101939612,
+          "p_value": 1.6849493294340056e-05
+        },
+        {
+          "symbol": "MLNUSD",
+          "n_trades": 94,
+          "win_rate": 0.3829787234042553,
+          "profit_factor": 0.17774263671612747,
+          "expectancy_r": -1.2349539821796367,
+          "sharpe_r": -2.097602546132296,
+          "p_value": 0.010074621404043834
+        },
+        {
+          "symbol": "NEOUSD",
+          "n_trades": 257,
+          "win_rate": 0.4357976653696498,
+          "profit_factor": 0.6950052399311817,
+          "expectancy_r": -0.18515250529816732,
+          "sharpe_r": -1.4178155509019086,
+          "p_value": 0.003744453119421437
+        },
+        {
+          "symbol": "NERUSD",
+          "n_trades": 80,
+          "win_rate": 0.4,
+          "profit_factor": 0.5135146843425595,
+          "expectancy_r": -0.32520019560968005,
+          "sharpe_r": -2.2723069621770016,
+          "p_value": 0.0039378664062129235
+        },
+        {
+          "symbol": "SANUSD",
+          "n_trades": 69,
+          "win_rate": 0.391304347826087,
+          "profit_factor": 0.18212072010963098,
+          "expectancy_r": -1.3822828271205423,
+          "sharpe_r": -1.5833764350150683,
+          "p_value": 0.04390035971068644
+        },
+        {
+          "symbol": "SHBUSD",
+          "n_trades": 51,
+          "win_rate": 0.23529411764705882,
+          "profit_factor": 0.11959745399677904,
+          "expectancy_r": -1.2364383198290922,
+          "sharpe_r": -9.078666427467734,
+          "p_value": 4.0033174157275856e-10
+        },
+        {
+          "symbol": "SOLUSD",
+          "n_trades": 184,
+          "win_rate": 0.46195652173913043,
+          "profit_factor": 0.8408680151277671,
+          "expectancy_r": -0.08511598987544375,
+          "sharpe_r": -0.5593916366557093,
+          "p_value": 0.2500458967841679
+        },
+        {
+          "symbol": "TRUUSD",
+          "n_trades": 98,
+          "win_rate": 0.02040816326530612,
+          "profit_factor": 0.0012943727859872833,
+          "expectancy_r": -15.753129481340753,
+          "sharpe_r": -8.984760591915665,
+          "p_value": 1.7344779604093424e-19
+        },
+        {
+          "symbol": "TRXUSD",
+          "n_trades": 234,
+          "win_rate": 0.358974358974359,
+          "profit_factor": 0.419397586817419,
+          "expectancy_r": -0.4570905300629871,
+          "sharpe_r": -3.358094095297555,
+          "p_value": 5.696282630393856e-11
+        },
+        {
+          "symbol": "UNIUSD",
+          "n_trades": 220,
+          "win_rate": 0.45,
+          "profit_factor": 0.7620999303919469,
+          "expectancy_r": -0.12694716703329958,
+          "sharpe_r": -0.9088194361766166,
+          "p_value": 0.062074279308844967
+        },
+        {
+          "symbol": "XLMUSD",
+          "n_trades": 206,
+          "win_rate": 0.5097087378640777,
+          "profit_factor": 0.49543074231691153,
+          "expectancy_r": -0.3474785038071912,
+          "sharpe_r": -0.5086990733552117,
+          "p_value": 0.2964499140329717
+        },
+        {
+          "symbol": "XMRUSD",
+          "n_trades": 234,
+          "win_rate": 0.5,
+          "profit_factor": 0.9119441572191257,
+          "expectancy_r": -0.04575804631273289,
+          "sharpe_r": -0.3372823514520053,
+          "p_value": 0.4887152817348222
+        },
+        {
+          "symbol": "XRPUSD",
+          "n_trades": 176,
+          "win_rate": 0.4375,
+          "profit_factor": 0.33718427411673296,
+          "expectancy_r": -0.6679111599351384,
+          "sharpe_r": -0.9786393334783108,
+          "p_value": 0.045671564817848065
+        },
+        {
+          "symbol": "XTZUSD",
+          "n_trades": 293,
+          "win_rate": 0.051194539249146756,
+          "profit_factor": 0.03578087517247141,
+          "expectancy_r": -3.787578196336658,
+          "sharpe_r": -12.295864517023636,
+          "p_value": 7.925820619190893e-76
+        },
+        {
+          "symbol": "ZECUSD",
+          "n_trades": 225,
+          "win_rate": 0.4577777777777778,
+          "profit_factor": 0.7890541921377712,
+          "expectancy_r": -0.11456793753957065,
+          "sharpe_r": -0.8329863589501791,
+          "p_value": 0.08801966139287085
+        }
+      ]
+    }
+  }
+}
