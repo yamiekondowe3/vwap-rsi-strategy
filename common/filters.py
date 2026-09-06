@@ -35,6 +35,29 @@ def session_mask(index: pd.DatetimeIndex, asset_class: str) -> pd.Series:
     return pd.Series((hours >= start) & (hours < end), index=index)
 
 
+# Named session windows in UTC. Deliberately widened to span both DST
+# regimes rather than modelling DST precisely: London is UTC+0/+1 and New
+# York UTC-5/-4, so "08:00 local" drifts by an hour across the year. A
+# 4-hour window pinned to UTC contains the true local open in both regimes,
+# which is the honest way to handle this without a timezone database and
+# without silently mislabelling half the sample.
+NAMED_SESSIONS = {
+    "london_open": (7, 11),    # 08:00 London falls at 07:00 or 08:00 UTC
+    "ny_open": (12, 16),       # 08:00 New York falls at 12:00 or 13:00 UTC
+    "overlap": (13, 17),       # London-NY overlap; ~50% of daily FX volume
+}
+
+
+def named_session_mask(index: pd.DatetimeIndex, name: str) -> pd.Series:
+    """Mask for a named session. 'london_ny' is the union of both opens."""
+    if name == "london_ny":
+        return (named_session_mask(index, "london_open")
+                | named_session_mask(index, "ny_open"))
+    start, end = NAMED_SESSIONS[name]
+    hours = index.hour
+    return pd.Series((hours >= start) & (hours < end), index=index)
+
+
 def volatility_regime_mask(df: pd.DataFrame, pctile: float = 50.0,
                            window: int = 500, atr_period: int = 14) -> pd.Series:
     """True when ATR sits in the upper `pctile` of its own trailing distribution.
