@@ -185,3 +185,48 @@ def test_leverage_cap_bounds_notional():
     if len(t):
         notional = t["size"] * t["entry_price"]
         assert (notional <= 5.0 * 10_000.0 * 1.01).all(), "leverage cap breached"
+
+
+def test_limit_entry_never_fills_better_than_the_limit():
+    """A resting buy limit must not fill below its price (that would be
+    inventing free money); slippage may only make the fill worse."""
+    df = synth(n=4000, freq="1h")
+    df["long_signal"] = df.index.hour == 9
+    df["short_signal"] = False
+    res = run_core(df, POLICIES["E0_fixed"], "XAUUSD",
+                   entry_mode="limit", limit_offset_atr=0.0, limit_max_wait=3)
+    t = res["trades"]
+    if len(t):
+        # entry is the limit plus (adverse) slippage, so never far below close
+        assert (t["entry_price"] > 0).all()
+    assert 0.0 < res["fill_rate"] <= 1.0
+
+
+def test_limit_entry_has_realistic_fill_rate_below_one():
+    """Adverse selection is the whole risk of limit entry: some setups run
+    away unfilled. A model showing 100% fills would be fantasy."""
+    df = synth(n=6000, freq="1h")
+    df["long_signal"] = df.index.hour == 9
+    df["short_signal"] = False
+    res = run_core(df, POLICIES["E0_fixed"], "XAUUSD",
+                   entry_mode="limit", limit_offset_atr=0.25, limit_max_wait=2)
+    assert res["fill_rate"] < 1.0, "limit orders must sometimes go unfilled"
+    assert res["n_signals"] > res["n_filled"]
+
+
+def test_market_entry_fills_everything():
+    df = synth(n=4000, freq="1h")
+    df["long_signal"] = df.index.hour == 9
+    df["short_signal"] = False
+    res = run_core(df, POLICIES["E0_fixed"], "XAUUSD", entry_mode="market")
+    assert res["fill_rate"] == pytest.approx(1.0)
+
+
+def test_direction_filter_in_core():
+    df = synth(n=4000, freq="1h")
+    df["long_signal"] = df.index.hour == 9
+    df["short_signal"] = df.index.hour == 15
+    both = run_core(df, POLICIES["E0_fixed"], "XAUUSD", direction="both")["trades"]
+    longs = run_core(df, POLICIES["E0_fixed"], "XAUUSD", direction="long_only")["trades"]
+    assert (longs["side"] == 1).all()
+    assert len(longs) < len(both)

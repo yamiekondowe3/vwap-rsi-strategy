@@ -23,7 +23,11 @@ def run(sig: pd.DataFrame, policy: ExitPolicy, symbol: str,
         friction: FrictionModel | None = None,
         max_trades_per_day: int | None = None,
         max_cost_ratio: float = 0.20,
-        max_leverage: float = 50.0) -> dict:
+        max_leverage: float = 50.0,
+        entry_mode: str = "market",
+        limit_offset_atr: float = 0.0,
+        limit_max_wait: int = 3,
+        direction: str = "both") -> dict:
     """`max_cost_ratio` skips setups whose round-trip execution cost exceeds
     that fraction of the intended risk; `max_leverage` caps notional exposure
     at a multiple of equity. Both guard the ATR-collapse blow-up described in
@@ -35,6 +39,15 @@ def run(sig: pd.DataFrame, policy: ExitPolicy, symbol: str,
     pos: Position | None = None
     trades: list[dict] = []
     trades_today, current_day = 0, None
+    # Resting limit order: {side, price, expires_at_bar}. A mean-reversion
+    # entry is a natural limit order -- you are buying a dip, so you can rest
+    # a bid instead of crossing the spread. That converts the half-spread
+    # from a cost into a saving. The catch is adverse selection: you only get
+    # filled when price keeps coming toward you, so unfilled setups are the
+    # ones that ran away without you. Both effects are modelled here --
+    # unfilled orders simply expire and are counted as trades not taken.
+    pending: dict | None = None
+    n_signals = n_filled = 0
 
     idx = sig.index
     has_spread = "spread" in sig.columns
@@ -83,6 +96,36 @@ def run(sig: pd.DataFrame, policy: ExitPolicy, symbol: str,
                 pos = None
             continue
 
+        # --- resting limit order: check for a fill on the next bar ---
+        if pending is not None:
+            nb_low, nb_high = lo[i + 1], h[i + 1]
+            hit = (pending["side"] == 1 and nb_low <= pending["price"]) or \
+                  (pending["side"] == -1 and nb_high >= pending["price"])
+            if hit:
+                side = pending["side"]
+                atr_e = pending["atr"]
+                # Filled AT the limit: no spread crossed. Slippage is still
+                # charged (a limit can be filled and then keep going), but the
+                # half-spread that a market order pays is saved.
+                entry_price = pending["price"] + friction.slippage(
+                    pending["price"], atr_e, side)
+                risk_per_unit = policy.stop_atr * atr_e
+                risk_amount = risk_pct * equity
+                size = risk_amount / risk_per_unit
+                if entry_price > 0 and size * entry_price > max_leverage * equity:
+                    size = (max_leverage * equity) / entry_price
+                    risk_amount = size * risk_per_unit
+                pos = open_position(side, entry_price, atr_e, policy, size,
+                                    ts_next, equity, risk_amount)
+                trades_today += 1
+                n_filled += 1
+                pending = None
+                continue
+            if i + 1 >= pending["expires"]:
+                pending = None      # unfilled: the setup ran away without us
+            else:
+                continue
+
         if max_trades_per_day is not None and trades_today >= max_trades_per_day:
             continue
         atr_now = a[i]
@@ -91,6 +134,9 @@ def run(sig: pd.DataFrame, policy: ExitPolicy, symbol: str,
 
         side = 1 if ls[i] else (-1 if ss[i] else 0)
         if side == 0:
+            continue
+        if (direction == "long_only" and side != 1) or \
+           (direction == "short_only" and side != -1):
             continue
 
         # --- COST GUARD (added after a real defect) ---------------------
@@ -111,8 +157,21 @@ def run(sig: pd.DataFrame, policy: ExitPolicy, symbol: str,
         if risk_per_unit <= 0 or est_cost / risk_per_unit > max_cost_ratio:
             continue
 
+        n_signals += 1
+        if entry_mode == "limit":
+            # Rest the order at the signal bar's close, optionally offset
+            # further in our favour. Resting AT the close means we trade only
+            # if price comes back to us -- the essence of a patient
+            # mean-reversion entry, and the reason the half-spread becomes a
+            # saving rather than a cost.
+            pending = {"side": side, "atr": atr_now,
+                       "price": c[i] - side * limit_offset_atr * atr_now,
+                       "expires": i + 1 + limit_max_wait}
+            continue
+
         entry_price = friction.apply_fill(ts_next, o[i + 1], atr_now, side,
                                           bar_spread=spr[i + 1] if has_spread else None)
+        n_filled += 1
         risk_amount = risk_pct * equity
         size = risk_amount / risk_per_unit
         # Second guard: cap notional exposure. Even with an acceptable cost
@@ -126,4 +185,6 @@ def run(sig: pd.DataFrame, policy: ExitPolicy, symbol: str,
                             equity, risk_amount)
         trades_today += 1
 
-    return {"trades": pd.DataFrame(trades), "final_equity": equity}
+    return {"trades": pd.DataFrame(trades), "final_equity": equity,
+            "n_signals": n_signals, "n_filled": n_filled,
+            "fill_rate": (n_filled / n_signals) if n_signals else np.nan}
