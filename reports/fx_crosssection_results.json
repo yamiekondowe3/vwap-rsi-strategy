@@ -1,0 +1,187 @@
+{
+  "rows": [
+    {
+      "symbol": "EURUSD",
+      "n_trades": 266,
+      "win_rate": 0.15413533834586465,
+      "profit_factor": 0.10670268111755682,
+      "expectancy_r": -18.126607534661762,
+      "p_value": 1.4700896743391162e-53
+    },
+    {
+      "symbol": "GBPUSD",
+      "n_trades": 214,
+      "win_rate": 0.19158878504672897,
+      "profit_factor": 0.05450250760837128,
+      "expectancy_r": -11.918956076272169,
+      "p_value": 3.2886839346371626e-37
+    },
+    {
+      "symbol": "USDJPY",
+      "n_trades": 176,
+      "win_rate": 0.4659090909090909,
+      "profit_factor": 0.6966880354921074,
+      "expectancy_r": -0.17366125380327554,
+      "p_value": 0.024533660557998993
+    },
+    {
+      "symbol": "USDCHF",
+      "n_trades": 295,
+      "win_rate": 0.23389830508474577,
+      "profit_factor": 0.12459947710146328,
+      "expectancy_r": -15.316314655196352,
+      "p_value": 4.790125784665295e-40
+    },
+    {
+      "symbol": "AUDUSD",
+      "n_trades": 181,
+      "win_rate": 0.3701657458563536,
+      "profit_factor": 0.1475269560560572,
+      "expectancy_r": -8.727037825214294,
+      "p_value": 6.828690863502587e-14
+    },
+    {
+      "symbol": "USDCAD",
+      "n_trades": 318,
+      "win_rate": 0.22012578616352202,
+      "profit_factor": 0.09669079262349378,
+      "expectancy_r": -11.133573599800682,
+      "p_value": 2.1100314329074078e-42
+    },
+    {
+      "symbol": "NZDUSD",
+      "n_trades": 196,
+      "win_rate": 0.4744897959183674,
+      "profit_factor": 0.20217468856648865,
+      "expectancy_r": -3.897266866395264,
+      "p_value": 4.673536264728989e-06
+    },
+    {
+      "symbol": "EURJPY",
+      "n_trades": 105,
+      "win_rate": 0.4380952380952381,
+      "profit_factor": 0.7577135303520907,
+      "expectancy_r": -0.1408374725965102,
+      "p_value": 0.1516428343706313
+    },
+    {
+      "symbol": "EURGBP",
+      "n_trades": 169,
+      "win_rate": 0.30177514792899407,
+      "profit_factor": 0.1282645014215568,
+      "expectancy_r": -20.85930264919838,
+      "p_value": 6.023611858603705e-20
+    },
+    {
+      "symbol": "EURCHF",
+      "n_trades": 245,
+      "win_rate": 0.2938775510204082,
+      "profit_factor": 0.11120221782800635,
+      "expectancy_r": -14.238413137369513,
+      "p_value": 1.02137130810382e-24
+    },
+    {
+      "symbol": "EURAUD",
+      "n_trades": 100,
+      "win_rate": 0.45,
+      "profit_factor": 0.2266635931353187,
+      "expectancy_r": -1.7431606321478623,
+      "p_value": 0.0015986335122861093
+    },
+    {
+      "symbol": "EURCAD",
+      "n_trades": 127,
+      "win_rate": 0.4015748031496063,
+      "profit_factor": 0.15629314987465368,
+      "expectancy_r": -5.727614339350625,
+      "p_value": 9.46145618240729e-08
+    },
+    {
+      "symbol": "GBPJPY",
+      "n_trades": 104,
+      "win_rate": 0.4519230769230769,
+      "profit_factor": 0.8014479695867587,
+      "expectancy_r": -0.11122425973246332,
+      "p_value": 0.26111291138765563
+    },
+    {
+      "symbol": "GBPCHF",
+      "n_trades": 186,
+      "win_rate": 0.3010752688172043,
+      "profit_factor": 0.0784827124255498,
+      "expectancy_r": -8.770438945611836,
+      "p_value": 3.557539430611616e-17
+    },
+    {
+      "symbol": "GBPAUD",
+      "n_trades": 92,
+      "win_rate": 0.40217391304347827,
+      "profit_factor": 0.11319547386547885,
+      "expectancy_r": -4.084133829839778,
+      "p_value": 4.609291536679585e-07
+    },
+    {
+      "symbol": "GBPCAD",
+      "n_trades": 179,
+      "win_rate": 0.24022346368715083,
+      "profit_factor": 0.08756852966723971,
+      "expectancy_r": -7.252168355096156,
+      "p_value": 1.0437673072068858e-20
+    },
+    {
+      "symbol": "AUDJPY",
+      "n_trades": 160,
+      "win_rate": 0.425,
+      "profit_factor": 0.6481173533711755,
+      "expectancy_r": -0.21608411456206006,
+      "p_value": 0.007718386510815949
+    },
+    {
+      "symbol": "AUDNZD",
+      "n_trades": 173,
+      "win_rate": 0.31213872832369943,
+      "profit_factor": 0.06926423520018378,
+      "expectancy_r": -8.86813492106655,
+      "p_value": 6.98826200006774e-11
+    },
+    {
+      "symbol": "CADJPY",
+      "n_trades": 194,
+      "win_rate": 0.4175257731958763,
+      "profit_factor": 0.6711827642496979,
+      "expectancy_r": -0.20338342083262556,
+      "p_value": 0.0051613633766403365
+    },
+    {
+      "symbol": "CHFJPY",
+      "n_trades": 134,
+      "win_rate": 0.5447761194029851,
+      "profit_factor": 1.1075432113376698,
+      "expectancy_r": 0.0550504662895618,
+      "p_value": 0.5239870570269131
+    },
+    {
+      "symbol": "NZDJPY",
+      "n_trades": 143,
+      "win_rate": 0.4405594405594406,
+      "profit_factor": 0.7248357706571613,
+      "expectancy_r": -0.16433645375728836,
+      "p_value": 0.05493803113095018
+    },
+    {
+      "symbol": "XAUUSD",
+      "n_trades": 303,
+      "win_rate": 0.5445544554455446,
+      "profit_factor": 1.1591511599471795,
+      "expectancy_r": 0.07661327524106391,
+      "p_value": 0.18206900715219562
+    }
+  ],
+  "n_fx": 21,
+  "positive": 1,
+  "median_er": -5.727614339350625,
+  "rho": 0.15474125031282365,
+  "xau_er": 0.07661327524106391,
+  "xau_percentile": 100.0,
+  "pass": false
+}

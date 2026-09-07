@@ -31,6 +31,7 @@ asset and overlay nothing** — buy-and-hold beat everything built here.
 | 10 | Risk overlay (trend gate × vol target) | Looked strong on ETHUSD: 8/8 rolling windows |
 | 11 | Overlay cross-section, 26 crypto pairs | **6/26 improve; median worse.** ETH was a best-of-5 artifact (P=0.33) |
 | 12 | Final 3 candidates, full control stack | 2 cleared the placebo; **both failed cross-sectional replication** (27% and 3% positive) |
+| 13 | ORB/XAUUSD vs 21 FX pairs (its true peer group) | **1/21 positive; XAUUSD at the 100th percentile.** Last candidate falls |
 
 ## The single lesson
 
