@@ -47,13 +47,13 @@ class VWAPRSIParams:
     # parameter: one rule, self-adjusting everywhere.
     adaptive_rsi: bool = False
     rsi_pctile: float = 20.0        # enter when RSI is in its lowest/highest N% (longs/shorts)
-    rsi_pctile_window: int = 500
+    rsi_pctile_window: int = 500   # trailing bars defining the distribution
     # Entry trigger. The source research document specifies a "first
     # counter-color pullback candle toward VWAP" -- NOT an RSI cross. This
     # project substituted RSI from the start, so the documented strategy was
     # never actually tested. "pullback" is the faithful implementation;
     # "none" is the pure VWAP side+slope filter with no trigger at all.
-    trigger: str = "rsi"            # rsi | pullback | none    # trailing bars defining "recent distribution"
+    trigger: str = "rsi"            # rsi | pullback | none
 
 
 def prepare_signals(df: pd.DataFrame, p: VWAPRSIParams) -> pd.DataFrame:
