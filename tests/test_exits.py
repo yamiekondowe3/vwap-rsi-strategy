@@ -147,3 +147,41 @@ def test_buy_and_hold_benchmark_on_uptrend():
     df = synth(n=3000, drift=0.0005)
     bh = buy_and_hold(df, periods_per_year=24 * 365)
     assert bh["total_return_pct"] > 0 and np.isfinite(bh["sharpe"])
+
+
+def test_cost_guard_skips_setups_where_spread_dominates_risk():
+    """The ATR-collapse defect: when ATR shrinks toward the spread, size
+    explodes and a nominal 1R stop costs many R. The guard must refuse
+    those setups entirely."""
+    df = synth(n=3000, freq="1h")
+    df["spread"] = 5.0                      # spread enormous vs ATR (~0.2)
+    df["long_signal"] = df.index.hour == 9
+    df["short_signal"] = False
+    permissive = run_core(df, POLICIES["E0_fixed"], "XAUUSD", max_cost_ratio=99.0)["trades"]
+    guarded = run_core(df, POLICIES["E0_fixed"], "XAUUSD", max_cost_ratio=0.20)["trades"]
+    assert len(permissive) > 0, "fixture should trade without the guard"
+    assert len(guarded) == 0, "guard must refuse setups where spread dominates risk"
+    # and the unguarded version is exactly the pathology we found in FX
+    assert permissive["r_multiple"].median() < -2.0
+
+
+def test_cost_guard_leaves_healthy_setups_alone():
+    df = synth(n=3000, freq="1h")
+    df["spread"] = 0.001                    # negligible vs ATR
+    df["long_signal"] = df.index.hour == 9
+    df["short_signal"] = False
+    a = run_core(df, POLICIES["E0_fixed"], "XAUUSD", max_cost_ratio=99.0)["trades"]
+    b = run_core(df, POLICIES["E0_fixed"], "XAUUSD", max_cost_ratio=0.20)["trades"]
+    assert len(a) == len(b), "guard must not touch setups with sane cost ratios"
+
+
+def test_leverage_cap_bounds_notional():
+    df = synth(n=3000, freq="1h")
+    df["spread"] = 0.001
+    df["long_signal"] = df.index.hour == 9
+    df["short_signal"] = False
+    t = run_core(df, POLICIES["E0_fixed"], "XAUUSD",
+                 starting_equity=10_000.0, max_leverage=5.0)["trades"]
+    if len(t):
+        notional = t["size"] * t["entry_price"]
+        assert (notional <= 5.0 * 10_000.0 * 1.01).all(), "leverage cap breached"

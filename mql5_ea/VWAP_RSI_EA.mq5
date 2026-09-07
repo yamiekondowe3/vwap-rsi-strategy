@@ -19,7 +19,9 @@ input double Stop_ATR_Mult       = 2.0;
 input double Target_ATR_Mult     = 2.0;   // 1.0R default; tune per WFO results
 input double Risk_Pct            = 0.5;   // percent of equity risked per trade
 input int    Day_Boundary_Hour   = 0;     // UTC hour VWAP resets (0 = midnight UTC)
+input double Max_Cost_Ratio    = 0.20;  // skip setups where spread exceeds this share of stop distance
 input int    Slippage_Points     = 30;
+input double Max_Leverage       = 50.0; // cap notional at this multiple of equity
 input int    MagicNumber         = 20260904;
 
 int rsiHandle, atrHandle;
@@ -105,8 +107,32 @@ bool HasOpenPosition()
 
 //--- Fixed-fractional position sizing from ATR-based stop distance,
 //--- mirroring backtest/engine.py's `size = risk_budget*equity / risk_per_unit`.
+
+//--- Select a filling mode the SYMBOL actually supports.
+//--- Both EAs previously hardcoded ORDER_FILLING_IOC. This broker reports
+//--- filling_mode=1 (FOK only) on XAUUSD and BTCUSD, so every order would
+//--- have been rejected with retcode 10030 "Unsupported filling mode".
+//--- Found by ops_rehearsal.py via order_check() before any live deployment.
+ENUM_ORDER_TYPE_FILLING PickFillingMode()
+{
+   long modes = SymbolInfoInteger(_Symbol, SYMBOL_FILLING_MODE);
+   if((modes & SYMBOL_FILLING_FOK) != 0) return ORDER_FILLING_FOK;
+   if((modes & SYMBOL_FILLING_IOC) != 0) return ORDER_FILLING_IOC;
+   return ORDER_FILLING_RETURN;
+}
+
 double CalcLotSize(double stopDistance)
 {
+   //--- COST GUARD (added after a real defect found in cross-sectional testing)
+   //--- Size is riskAmount/stopDistance. When ATR collapses relative to the
+   //--- spread (e.g. quiet Asian-session hours on low-volatility symbols),
+   //--- stopDistance shrinks, size explodes, and the fixed spread on that
+   //--- oversized position costs many R despite a nominal 1R stop. Backtests
+   //--- showed -18R to -21R per trade from exactly this. Refuse such setups.
+   double spreadPrice = (double)SymbolInfoInteger(_Symbol, SYMBOL_SPREAD)
+                        * SymbolInfoDouble(_Symbol, SYMBOL_POINT);
+   if(stopDistance <= 0) return 0.0;
+   if(spreadPrice / stopDistance > Max_Cost_Ratio) return 0.0;
    double equity = AccountInfoDouble(ACCOUNT_EQUITY);
    double riskAmount = equity * (Risk_Pct / 100.0);
    double tickValue = SymbolInfoDouble(_Symbol, SYMBOL_TRADE_TICK_VALUE);
@@ -118,8 +144,21 @@ double CalcLotSize(double stopDistance)
    double minLot = SymbolInfoDouble(_Symbol, SYMBOL_VOLUME_MIN);
    double maxLot = SymbolInfoDouble(_Symbol, SYMBOL_VOLUME_MAX);
    double step   = SymbolInfoDouble(_Symbol, SYMBOL_VOLUME_STEP);
+   //--- Second guard: cap notional so a small stop cannot imply a position
+   //--- larger than the account can carry.
+   double contract = SymbolInfoDouble(_Symbol, SYMBOL_TRADE_CONTRACT_SIZE);
+   double price    = SymbolInfoDouble(_Symbol, SYMBOL_ASK);
+   if(contract > 0 && price > 0)
+   {
+      double maxLots = (Max_Leverage * equity) / (contract * price);
+      lots = MathMin(lots, maxLots);
+   }
    lots = MathFloor(lots / step) * step;
-   return MathMax(minLot, MathMin(maxLot, lots));
+   //--- If the guards pushed size below the broker minimum, SKIP the trade.
+   //--- Forcing it back up to minLot would silently violate the very cap that
+   //--- was just applied -- the original bug in a different disguise.
+   if(lots < minLot) return 0.0;
+   return MathMin(maxLot, lots);
 }
 
 void OnTick()
@@ -154,7 +193,7 @@ void OnTick()
    req.symbol = _Symbol;
    req.deviation = Slippage_Points;
    req.magic = MagicNumber;
-   req.type_filling = ORDER_FILLING_IOC;
+   req.type_filling = PickFillingMode();
 
    if(longSignal)
    {

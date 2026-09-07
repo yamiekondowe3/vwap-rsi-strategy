@@ -21,7 +21,13 @@ from .exits import ExitPolicy, Position, open_position, process_bar
 def run(sig: pd.DataFrame, policy: ExitPolicy, symbol: str,
         starting_equity: float = 10_000.0, risk_pct: float = 0.005,
         friction: FrictionModel | None = None,
-        max_trades_per_day: int | None = None) -> dict:
+        max_trades_per_day: int | None = None,
+        max_cost_ratio: float = 0.20,
+        max_leverage: float = 50.0) -> dict:
+    """`max_cost_ratio` skips setups whose round-trip execution cost exceeds
+    that fraction of the intended risk; `max_leverage` caps notional exposure
+    at a multiple of equity. Both guard the ATR-collapse blow-up described in
+    the entry block below."""
     if friction is None:
         friction = FrictionModel(symbol=symbol)
 
@@ -87,13 +93,34 @@ def run(sig: pd.DataFrame, policy: ExitPolicy, symbol: str,
         if side == 0:
             continue
 
+        # --- COST GUARD (added after a real defect) ---------------------
+        # Position size is risk_amount / (stop_atr * ATR). When ATR collapses
+        # relative to the spread -- e.g. FX majors on H1 during quiet Asian
+        # hours, where ATR approaches zero while the broker's spread sits at
+        # its floor -- size explodes, and the fixed spread on that oversized
+        # position costs many R despite a nominal 1R stop. Cross-sectional
+        # testing surfaced losses of -18R to -21R per trade from exactly this.
+        # Skip any setup where round-trip execution cost is a large fraction
+        # of the intended risk; such a trade cannot win even if the signal is
+        # right.
+        risk_per_unit = policy.stop_atr * atr_now
+        bar_spread = spr[i + 1] if has_spread else np.nan
+        est_spread = (bar_spread if np.isfinite(bar_spread) and bar_spread > 0
+                      else 2 * friction.half_spread(ts_next, o[i + 1], None))
+        est_cost = est_spread + 2 * friction.slippage_atr_frac * atr_now
+        if risk_per_unit <= 0 or est_cost / risk_per_unit > max_cost_ratio:
+            continue
+
         entry_price = friction.apply_fill(ts_next, o[i + 1], atr_now, side,
                                           bar_spread=spr[i + 1] if has_spread else None)
-        risk_per_unit = policy.stop_atr * atr_now
-        if risk_per_unit <= 0:
-            continue
         risk_amount = risk_pct * equity
         size = risk_amount / risk_per_unit
+        # Second guard: cap notional exposure. Even with an acceptable cost
+        # ratio, a small ATR can imply a position far larger than the account
+        # could actually carry at the broker's margin requirement.
+        if entry_price > 0 and size * entry_price > max_leverage * equity:
+            size = (max_leverage * equity) / entry_price
+            risk_amount = size * risk_per_unit
 
         pos = open_position(side, entry_price, atr_now, policy, size, ts_next,
                             equity, risk_amount)
