@@ -47,7 +47,13 @@ class VWAPRSIParams:
     # parameter: one rule, self-adjusting everywhere.
     adaptive_rsi: bool = False
     rsi_pctile: float = 20.0        # enter when RSI is in its lowest/highest N% (longs/shorts)
-    rsi_pctile_window: int = 500    # trailing bars defining "recent distribution"
+    rsi_pctile_window: int = 500
+    # Entry trigger. The source research document specifies a "first
+    # counter-color pullback candle toward VWAP" -- NOT an RSI cross. This
+    # project substituted RSI from the start, so the documented strategy was
+    # never actually tested. "pullback" is the faithful implementation;
+    # "none" is the pure VWAP side+slope filter with no trigger at all.
+    trigger: str = "rsi"            # rsi | pullback | none    # trailing bars defining "recent distribution"
 
 
 def prepare_signals(df: pd.DataFrame, p: VWAPRSIParams) -> pd.DataFrame:
@@ -75,14 +81,30 @@ def prepare_signals(df: pd.DataFrame, p: VWAPRSIParams) -> pd.DataFrame:
     out["rsi_overbought_level"] = overbought_level
 
     # Entry filters, evaluated on the CLOSED bar (signal), executed next bar.
-    long_signal = (
-        (out["close"] > out["vwap"]) & out["vwap_slope_up"]
-        & (out["rsi"].shift(1) < oversold_level) & (out["rsi"] >= oversold_level)  # RSI recovering from oversold
-    )
-    short_signal = (
-        (out["close"] < out["vwap"]) & out["vwap_slope_down"]
-        & (out["rsi"].shift(1) > overbought_level) & (out["rsi"] <= overbought_level)
-    )
+    # Shared directional filter: price on the correct side of VWAP, VWAP
+    # sloping that way. Identical across all three triggers.
+    long_ok = (out["close"] > out["vwap"]) & out["vwap_slope_up"]
+    short_ok = (out["close"] < out["vwap"]) & out["vwap_slope_down"]
+
+    if p.trigger == "rsi":
+        long_signal = long_ok & (out["rsi"].shift(1) < oversold_level) & (out["rsi"] >= oversold_level)
+        short_signal = short_ok & (out["rsi"].shift(1) > overbought_level) & (out["rsi"] <= overbought_level)
+    elif p.trigger == "pullback":
+        # The documented trigger: the FIRST counter-color candle while the
+        # filter holds -- a red candle in an uptrend, green in a downtrend.
+        # "First" means the previous bar was not itself counter-color, so a
+        # run of red candles fires once, not repeatedly.
+        red = out["close"] < out["open"]
+        green = out["close"] > out["open"]
+        long_signal = long_ok & red & ~red.shift(1).fillna(False)
+        short_signal = short_ok & green & ~green.shift(1).fillna(False)
+    elif p.trigger == "none":
+        # Pure VWAP side + slope, entering on the bar the filter first turns
+        # true (not every bar it stays true, which would just re-enter).
+        long_signal = long_ok & ~long_ok.shift(1).fillna(False)
+        short_signal = short_ok & ~short_ok.shift(1).fillna(False)
+    else:
+        raise ValueError(f"unknown trigger {p.trigger!r}")
     if p.min_vwap_dist_atr > 0:
         stretched = (out["close"] - out["vwap"]).abs() >= p.min_vwap_dist_atr * out["atr"]
         long_signal &= stretched.fillna(False)
